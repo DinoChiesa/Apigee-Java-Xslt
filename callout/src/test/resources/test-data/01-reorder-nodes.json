@@ -1,0 +1,16 @@
+{
+  "input" : "Sample-Soap.xml",
+  "context" : {
+    "myxsl" : "file://Sample-Soap-ReOrderNodes.xsl",
+    "inputVarname" : "file://Sample-Soap.xml"
+  },
+  "properties" : {
+    "debug" : "false",
+    "input" : "inputVarname",
+    "xslt" : "{myxsl}"
+  },
+  "expected" : {
+    "success" : "true",
+    "output" : "Sample-Soap-Reordered.xml"
+  }
+}
