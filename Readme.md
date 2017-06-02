@@ -17,7 +17,7 @@ If you want to build it, feel free.  The instructions are at the bottom of this 
 2. include a Java callout policy in your
    apiproxy/resources/policies directory. It should look
    like this:
-   ```
+   ```xml
     <JavaCallout name='Java-Xslt'>
       <Properties>
         <Property name='xslt'>file://xslt-name-here.xsl</Property>
@@ -169,6 +169,8 @@ Building from source requires Java 1.7, and Maven.
   ```
   This will build the jar and also run all the tests.
 
+
+Pull requests are welcomed!
 
 
 ## Build Dependencies
