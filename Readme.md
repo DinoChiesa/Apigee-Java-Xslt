@@ -17,7 +17,7 @@ If you want to build it, feel free.  The instructions are at the bottom of this 
 2. include a Java callout policy in your
    apiproxy/resources/policies directory. It should look
    like this:
-
+   ```
     <JavaCallout name='Java-Xslt'>
       <Properties>
         <Property name='xslt'>file://xslt-name-here.xsl</Property>
@@ -26,7 +26,8 @@ If you want to build it, feel free.  The instructions are at the bottom of this 
       <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
       <ResourceURL>java://edge-custom-xslt-1.0.3.jar</ResourceURL>
     </JavaCallout>
-
+   ```
+   
 5. use the Edge UI, or a command-line tool like pushapi (See
    https://github.com/carloseberhardt/apiploy) or similar to
    import the proxy into an Edge organization, and then deploy the proxy . 
@@ -53,16 +54,18 @@ better performance at high concurrency.
 
 ## Example 1: Perform a simple transform
 
-  <JavaCallout name='JavaCallout-Xslt-1'>
-    <Properties>
-       <Property name='xslt'>{xslturl}</Property>
-       <Property name='engine'>saxon</Property>
-       <Property name='input'>response</Property>
-       <Property name='output'>response.content</Property>
-    </Properties>
-    <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-    <ResourceURL>java://edge-custom-xslt-1.0.3.jar</ResourceURL>
-  </JavaCallout>
+```xml
+<JavaCallout name='JavaCallout-Xslt-1'>
+  <Properties>
+     <Property name='xslt'>{xslturl}</Property>
+     <Property name='engine'>saxon</Property>
+     <Property name='input'>response</Property>
+     <Property name='output'>response.content</Property>
+  </Properties>
+  <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
+  <ResourceURL>java://edge-custom-xslt-1.0.3.jar</ResourceURL>
+</JavaCallout>
+```
 
 The xslt property specifies the sheet that defines the transform.  This
 can be one of 4 forms:
