@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
@@ -17,7 +18,7 @@ import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
 import org.apache.commons.validator.routines.UrlValidator;
 
 public class PooledTransformerFactory
-    extends BaseKeyedPoolableObjectFactory/*<String, Transformer>*/ {
+    extends BaseKeyedPoolableObjectFactory<String, Transformer> {
 
     private Map<String,TransformerFactory> factoryCache;
 
@@ -25,13 +26,14 @@ public class PooledTransformerFactory
         this.factoryCache = new HashMap<String,TransformerFactory>();
     }
 
-    private TransformerFactory getTransformerFactory(String engine /*, MessageContext c, String p */){
-        TransformerFactory f = this.factoryCache.get(engine);
-        if (f == null) {
-            f = TransformerFactory.newInstance(engine, null);
-            this.factoryCache.put(engine, f);
+    private TransformerFactory getTransformerFactory(String engine){
+        TransformerFactory tf = this.factoryCache.get(engine);
+        if (tf == null) {
+            tf = TransformerFactory.newInstance(engine, null);
+            tf.setErrorListener(new SimpleErrorListener());
+            this.factoryCache.put(engine, tf);
         }
-        return f;
+        return tf;
     }
 
     private static InputStream getResourceAsStream(String resourceName)
@@ -52,8 +54,8 @@ public class PooledTransformerFactory
         return in;
     }
 
-    private Source convertXsltToSource(String xslt /*, MessageContext msgCtxt, String prefix*/)  throws IOException {
-        // check for the kind of xslt.  URI, filename, or string
+    private Source convertXsltToSource(String xslt) throws IOException {
+        // check for the kind of xslt. URI, filename, or string
         Source source = null;
         UrlValidator urlv = new UrlValidator();
 
@@ -82,20 +84,36 @@ public class PooledTransformerFactory
      * This creates a Transformer if not already present in the pool.
      */
     @Override
-    public Transformer makeObject(Object key) throws Exception {
+    public Transformer makeObject(String key) throws Exception {
+        Transformer t = null;
         String[] parts = StringUtils.split((String)key,"-",2);
         String engine = parts[0];
-        TransformerFactory factory = getTransformerFactory(engine);
         String xslt = parts[1];
-        Source xsltSource = convertXsltToSource(xslt);
-        return factory.newTransformer(xsltSource);
+        TransformerFactory tf = getTransformerFactory(engine);
+        SimpleErrorListener listener = (SimpleErrorListener) tf.getErrorListener();
+        try {
+            listener.reset();
+            Source xsltSource = convertXsltToSource(xslt);
+            t = tf.newTransformer(xsltSource);
+        }
+        catch (javax.xml.transform.TransformerConfigurationException tce1) {
+            if (listener.getXsltError()!=null) {
+                throw new PoolException(tce1.getMessage(),
+                                        listener.getXsltError(),
+                                        tce1);
+            }
+            else {
+                throw tce1;
+            }
+        }
+        return t;
     }
 
     /**
      * Destroy an instance no longer needed by the pool.
      */
     @Override
-    public void destroyObject(Object /*String*/ key, Object /*Transformer*/ t) {
+    public void destroyObject(String /*Object*/ key, Transformer /*Object*/ t) {
         /* NOOP */
     }
 
@@ -103,7 +121,7 @@ public class PooledTransformerFactory
      * Reinitialize an instance to be returned by the pool to a caller
      */
     @Override
-    public void activateObject(Object /*String*/ key, Object /*Transformer*/ t) throws Exception {
+    public void activateObject(String /*Object*/ key, Transformer /*Object*/ t) throws Exception {
         /* NOOP */
     }
 
@@ -111,7 +129,31 @@ public class PooledTransformerFactory
      * Uninitialize an instance to be returned to the idle object pool.
      */
     @Override
-    public void passivateObject(Object /*String*/ key, Object /*Transformer*/ t) throws Exception {
+    public void passivateObject(String /*Object*/ key, Transformer /*Object*/ t) throws Exception {
         ((Transformer)t).reset();
     }
+
+    /**
+     * This class simply catches and stores the most recent error, for
+     * later retrieval. Last write wins.
+     */
+    final class SimpleErrorListener implements javax.xml.transform.ErrorListener {
+        private String xsltError;
+        public void error(TransformerException exception) {
+            xsltError = exception.toString();
+        }
+        public void fatalError(TransformerException exception) {
+            xsltError = exception.toString();
+        }
+        public void warning(TransformerException exception) {
+            /* gulp */
+        }
+        public String getXsltError() {
+            return xsltError;
+        }
+        public void reset() {
+            xsltError = null;
+        }
+    }
+
 }

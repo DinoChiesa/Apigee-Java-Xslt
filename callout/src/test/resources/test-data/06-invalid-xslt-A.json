@@ -1,0 +1,14 @@
+{
+  "input" : "Sample-Soap.xml",
+  "context" : {
+    "myxsl" : "<stylesheet>"
+  },
+  "properties" : {
+    "debug" : "false",
+    "xslt" : "{myxsl}"
+  },
+  "expected" : {
+    "success" : "false",
+    "error" : "Failed to compile stylesheet. 1 error detected."
+  }
+}

@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.apigee.callout</groupId>
   <artifactId>edge-custom-xslt</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <name>EdgeCustomXslt</name>
   <url>http://maven.apache.org</url>
   <packaging>jar</packaging>
@@ -58,8 +58,8 @@
     <dependency>
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
-      <version>1.5.4</version>
-      <scope>provided</scope>
+      <version>1.6</version>
+      <!-- <scope>provided</scope> -->
     </dependency>
 
     <dependency>
@@ -208,11 +208,12 @@ mvn install:install-file \
                 <copy todir="${apiproxy.java.rsrc.dir}">
                   <fileset dir="${project.build.directory}">
                     <include name="${project.artifactId}-${project.version}.jar"/>
-                    <!-- copy any required dependencies tht are not
-                         already included in the Edge runtime: -->
-
+                    <!-- copy required dependencies: -->
+                    <include name="lib/commons-pool-1.6.jar"/>
+                    <include name="lib/commons-validator-1.4.1.jar"/>
+                    <include name="lib/commons-lang-2.6.jar"/>
+                    <include name="lib/guava-18.0.jar"/>
                     <!--                    -->
-
                   </fileset>
                   <mapper type="flatten"/>
                 </copy>

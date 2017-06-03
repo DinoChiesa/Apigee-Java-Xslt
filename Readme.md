@@ -12,7 +12,7 @@ All you need is the built JAR, and the appropriate configuration for the policy.
 If you want to build it, feel free.  The instructions are at the bottom of this readme. 
 
 
-1. copy the jar file, available in  target/edge-custom-xslt-1.0.3.jar , if you have built the jar, or in [the repo](bundle/apiproxy/resources/java/edge-custom-xslt-1.0.3.jar) if you have not, to your apiproxy/resources/java directory. You can do this offline, or using the graphical Proxy Editor in the Apigee Edge Admin Portal. 
+1. copy the jar file, available in  target/edge-custom-xslt-1.0.4.jar , if you have built the jar, or in [the repo](bundle/apiproxy/resources/java/edge-custom-xslt-1.0.4.jar) if you have not, to your apiproxy/resources/java directory. You can do this offline, or using the graphical Proxy Editor in the Apigee Edge Admin Portal. 
 
 2. include a Java callout policy in your
    apiproxy/resources/policies directory. It should look
@@ -24,7 +24,7 @@ If you want to build it, feel free.  The instructions are at the bottom of this 
            ....
       </Properties>
       <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-      <ResourceURL>java://edge-custom-xslt-1.0.3.jar</ResourceURL>
+      <ResourceURL>java://edge-custom-xslt-1.0.4.jar</ResourceURL>
     </JavaCallout>
    ```
    
@@ -63,7 +63,7 @@ better performance at high concurrency.
      <Property name='output'>response.content</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.3.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.4.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -128,7 +128,7 @@ You can pass parameters to the XSL, like so:
      <Property name='param_y'>{variable-containing-one-of-the-above}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.3.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.4.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -180,7 +180,7 @@ Pull requests are welcomed!
 - Apache commons lang 2.6
 - Apache commons validator 1.4.1
 - Apache commons io 2.0.1
-- Apache commons pool 1.5.4
+- Apache commons pool 1.6
 
 
 ## License

@@ -134,7 +134,7 @@ public class XsltCallout implements Execution {
          * commons-pool, the types are generic.
          */
         this.transformerPool =
-            new StackKeyedObjectPool/*<String, Transformer>*/(new PooledTransformerFactory(), MAX_IDLE_TRANSFORMERS);
+            new StackKeyedObjectPool<String, Transformer>(new PooledTransformerFactory(), MAX_IDLE_TRANSFORMERS);
 
         fileResourceCache = CacheBuilder.newBuilder()
             .concurrencyLevel(4)
@@ -336,8 +336,7 @@ public class XsltCallout implements Execution {
         return paramProps;
     }
 
-    public ExecutionResult execute(MessageContext msgCtxt,
-                                   ExecutionContext exeCtxt) {
+    public ExecutionResult execute(MessageContext msgCtxt, ExecutionContext exeCtxt) {
         ExecutionResult calloutResult = ExecutionResult.ABORT;
         Boolean isValid = false;
         String cacheKey = null;
@@ -377,12 +376,11 @@ public class XsltCallout implements Execution {
             String xformResult = xformOutput.getWriter().toString().trim();
             String outputVariable = getOutputVariable();
             msgCtxt.setVariable(outputVariable, xformResult);
-
             calloutResult = ExecutionResult.SUCCESS;
         }
         catch (Exception e) {
             if (debug) e.printStackTrace(); // to MP stdout
-            String error = e.toString();
+            String error = error = e.toString();
             msgCtxt.setVariable(varName("exception"), error);
             int ch = error.lastIndexOf(':');
             if (ch >= 0) {
@@ -390,6 +388,10 @@ public class XsltCallout implements Execution {
             }
             else {
                 msgCtxt.setVariable(varName("error"), error);
+            }
+            if (e instanceof PoolException) {
+                msgCtxt.setVariable(varName("additionalInformation"),
+                                    ((PoolException)e).getAdditionalInformation());
             }
         }
         finally {
