@@ -1,0 +1,14 @@
+{
+  "input" : "Sample-Soap.xml",
+  "context" : {
+    "myxsl" : ""
+  },
+  "properties" : {
+    "debug" : "false",
+    "xslt" : "{myxsl}"
+  },
+  "expected" : {
+    "success" : "false",
+    "error" : "xslt resolves to null or empty"
+  }
+}

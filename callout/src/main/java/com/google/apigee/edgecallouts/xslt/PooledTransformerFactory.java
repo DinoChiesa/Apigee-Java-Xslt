@@ -73,9 +73,8 @@ public class PooledTransformerFactory
             source = new StreamSource(in);
         }
         else {
-            throw new IllegalStateException("configuration error: cannot determine type of xslt");
+            throw new IllegalStateException("configuration error: invalid xslt");
         }
-
         return source;
     }
 
@@ -84,19 +83,12 @@ public class PooledTransformerFactory
      */
     @Override
     public Transformer makeObject(Object key) throws Exception {
-        Transformer t = null;
-        try {
-            String[] parts = StringUtils.split((String)key,"-",2);
-            String engine = parts[0];
-            TransformerFactory factory = getTransformerFactory(engine);
-            String xslt = parts[1];
-            Source xsltSource = convertXsltToSource(xslt);
-            t = factory.newTransformer(xsltSource);
-        }
-        catch (Exception e) {
-            throw new RuntimeException("Error while creating pooled Transformer: " + key, e);
-        }
-        return t;
+        String[] parts = StringUtils.split((String)key,"-",2);
+        String engine = parts[0];
+        TransformerFactory factory = getTransformerFactory(engine);
+        String xslt = parts[1];
+        Source xsltSource = convertXsltToSource(xslt);
+        return factory.newTransformer(xsltSource);
     }
 
     /**

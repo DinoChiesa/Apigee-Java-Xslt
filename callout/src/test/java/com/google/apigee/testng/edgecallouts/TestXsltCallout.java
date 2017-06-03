@@ -131,7 +131,7 @@ public class TestXsltCallout {
         ArrayList<TestCase> list = new ArrayList<TestCase>();
         for (File file : files) {
             String name = file.getName();
-            if (name.endsWith(".json")) {
+            if (name.matches("^[0-9]+.+.json$")) {
                 TestCase tc = om.readValue(file, TestCase.class);
                 tc.setTestName(name.substring(0,name.length()-5));
                 list.add(tc);
@@ -215,7 +215,6 @@ public class TestXsltCallout {
             else {
                 String expectedError = tc.getExpected().get("error");
                 Assert.assertNotNull(expectedError, "broken test: no expected error specified");
-
                 String actualError = msgCtxt.getVariable("xslt_error");
                 Assert.assertEquals(actualError, expectedError, "error not as expected");
             }

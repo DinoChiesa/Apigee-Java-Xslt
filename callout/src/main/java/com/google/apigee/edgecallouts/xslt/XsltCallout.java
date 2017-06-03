@@ -103,7 +103,7 @@ public class XsltCallout implements Execution {
     private final static Pattern urlReferencePattern = Pattern.compile(urlReferencePatternString);
     private LoadingCache<String, String> fileResourceCache;
     private LoadingCache<String, String> urlResourceCache;
-    private KeyedObjectPool transformers;
+    private KeyedObjectPool transformerPool;
     private Map<String,String> properties; // read-only
 
     public XsltCallout (Map properties) {
@@ -133,7 +133,7 @@ public class XsltCallout implements Execution {
          * non-generic types like StackKeyedObjectPool. In v1.6 of
          * commons-pool, the types are generic.
          */
-        this.transformers =
+        this.transformerPool =
             new StackKeyedObjectPool/*<String, Transformer>*/(new PooledTransformerFactory(), MAX_IDLE_TRANSFORMERS);
 
         fileResourceCache = CacheBuilder.newBuilder()
@@ -242,14 +242,14 @@ public class XsltCallout implements Execution {
         String xslt = (String) this.properties.get("xslt");
         Source source = null;
         if (xslt == null) {
-            throw new IllegalStateException("configuration error: no xslt property.");
+            throw new IllegalStateException("configuration error: no xslt property");
         }
         if (xslt.equals("")) {
-            throw new IllegalStateException("configuration error: xslt property is empty.");
+            throw new IllegalStateException("configuration error: xslt property is empty");
         }
         xslt = resolvePropertyValue(xslt, msgCtxt);
         if (xslt == null || xslt.equals("")) {
-            throw new IllegalStateException("configuration error: xslt resolves to null or empty.");
+            throw new IllegalStateException("configuration error: xslt resolves to null or empty");
         }
         xslt = xslt.trim();
         xslt = maybeResolveUrlReference(xslt);
@@ -340,15 +340,14 @@ public class XsltCallout implements Execution {
                                    ExecutionContext exeCtxt) {
         ExecutionResult calloutResult = ExecutionResult.ABORT;
         Boolean isValid = false;
-        String cachekey = null;
+        String cacheKey = null;
         boolean debug = getDebug();
         Transformer transformer = null;
         try {
             String xslt = getXslt(msgCtxt);
             String xsltEngine = getEngine(msgCtxt);
-            cachekey = xsltEngine + "-" + xslt;
-            //cachekey = xsltEngine + "-" + DigestUtils.sha256Hex(xslt.getBytes(StandardCharsets.UTF_8));
-            transformer = (Transformer) transformers.borrowObject(cachekey);
+            cacheKey = xsltEngine + "-" + xslt;
+            transformer = (Transformer) transformerPool.borrowObject(cacheKey);
             CustomXsltErrorListener listener = new CustomXsltErrorListener(msgCtxt);
             transformer.setErrorListener(listener);
             Source input = getTransformInput(msgCtxt);
@@ -378,7 +377,6 @@ public class XsltCallout implements Execution {
             String xformResult = xformOutput.getWriter().toString().trim();
             String outputVariable = getOutputVariable();
             msgCtxt.setVariable(outputVariable, xformResult);
-            transformers.returnObject(cachekey,transformer);
 
             calloutResult = ExecutionResult.SUCCESS;
         }
@@ -393,13 +391,13 @@ public class XsltCallout implements Execution {
             else {
                 msgCtxt.setVariable(varName("error"), error);
             }
-            if (transformer != null) {
-                try {
-                    transformers.returnObject(cachekey,transformer);
-                }
-                catch (Exception e2) {
-                    /* gulp! */
-                }
+        }
+        finally {
+            try {
+                if (cacheKey != null && transformer != null)
+                    transformerPool.returnObject(cacheKey,transformer);
+            }
+            catch (java.lang.Exception ignored) {
             }
         }
 
