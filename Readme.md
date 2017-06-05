@@ -1,9 +1,16 @@
 # Java callout for Xslt
 
 This directory contains the Java source code required to compile a Java
-callout for Apigee Edge that does XSLT.  There's a built-in policy that
-does XSLT; this callout is different in that it can read the XSLT sheet
-from a context variable, as well as the input and output. 
+callout for Apigee Edge that does XSLT. There's a built-in policy that
+does XSLT; this callout is different in that it is a bit more flexible.
+
+* the person configuring the policy can specify the XSLT sheet in a context variable.
+  This is nice because it means the XSLT can be dynamically determined at runtime.
+* Likewise, the input and output can be specified in a context variable. 
+* It is possible to specify an XSLT source available at an HTTP endpoint
+* It is possible to specify parameters for the XSLT that are retrieved at an HTTP endpoint
+* It is possible to specify saxon or xalan as the XSLT engine.
+
 
 ## Using this policy
 
@@ -98,8 +105,8 @@ If a URL, the URL must return a valid XSL. The URL should be accessible
 from the message processor. The contents of the URL will be cached.
 
 
-The engine property is optional, and defaults to saxon. You can also
-specify xalan here.
+The engine property is optional, and defaults to saxon, which is included in the Apigee Edge runtime. You can also
+specify xalan here. If you do that you will need to supply the xalan jars. 
 
 The input property specifies where to find the content to be
 transformed. This must be a variable name.  Do not use curly-braces. If
