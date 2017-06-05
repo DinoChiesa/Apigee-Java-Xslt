@@ -1,0 +1,15 @@
+{
+  "context" : {
+    "myxsl" : "https://gist.githubusercontent.com/DinoChiesa/6ecf0486c63784b8d3a09a0bffc6b182/raw/17a8a8c68c89a7eb5775a206ec5ba2d0a6414ae1/Harini.xsl",
+    "inputVarname" : "file://Harini-SOAP-input.xml"
+  },
+  "properties" : {
+    "debug" : "true",
+    "input" : "inputVarname",
+    "xslt" : "{myxsl}"
+  },
+  "expected" : {
+    "success" : "true",
+    "output" : "Harini-Soap-Output.xml"
+  }
+}

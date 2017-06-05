@@ -156,17 +156,25 @@ public class TestXsltCallout {
         return new String(Files.readAllBytes(Paths.get(testDataDir, ref.substring(7,ref.length()))));
     }
 
+    private InputStream getInputStream(TestCase tc) throws Exception {
+        if (tc.getInput()!=null) {
+            Path path = Paths.get(testDataDir, tc.getInput());
+            if (!Files.exists(path)) {
+                throw new IOException("file("+tc.getInput()+") not found");
+            }
+            return Files.newInputStream(path);
+        }
+
+        // readable empty stream
+        return new ByteArrayInputStream(new byte[] {});
+    }
+
     @Test(dataProvider = "batch1")
     public void test2_Configs(TestCase tc) throws Exception {
         if (tc.getDescription()!= null)
             System.out.printf("  %10s - %s\n", tc.getTestName(), tc.getDescription() );
         else
             System.out.printf("  %10s\n", tc.getTestName() );
-
-        Path path = Paths.get(testDataDir, tc.getInput());
-        if (!Files.exists(path)) {
-            throw new IOException("file("+tc.getInput()+") not found");
-        }
 
         // set variables into message context
         for (Map.Entry<String, String> entry : tc.getContext().entrySet()) {
@@ -178,7 +186,7 @@ public class TestXsltCallout {
             msgCtxt.setVariable(key, value);
         }
 
-        messageContentStream = Files.newInputStream(path);
+        messageContentStream = getInputStream(tc);
 
         XsltCallout callout = new XsltCallout(tc.getProperties());
 
@@ -192,7 +200,7 @@ public class TestXsltCallout {
         if (expectedResult == actualResult) {
             if (expectedResult == ExecutionResult.SUCCESS) {
                 String fname = tc.getExpected().get("output");
-                path = Paths.get(testDataDir, fname);
+                Path path = Paths.get(testDataDir, fname);
                 if (!Files.exists(path)) {
                     throw new IOException("expected output file("+fname+") not found");
                 }
