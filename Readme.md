@@ -151,7 +151,10 @@ into the XSL like so:
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-  <!-- converted is set in the XSL policy definition -->
+  <!--
+    if param_x is set in the XSL policy definition, then
+    the XSL can retrieve the value this way: 
+  -->
   <xsl:param name="x" select="''"/>
 
   ...
