@@ -95,6 +95,7 @@ public class PooledTransformerFactory
             listener.reset();
             Source xsltSource = convertXsltToSource(xslt);
             t = tf.newTransformer(xsltSource);
+            t.setURIResolver(new DataURIResolver(t.getURIResolver()));
         }
         catch (javax.xml.transform.TransformerConfigurationException tce1) {
             if (listener.getXsltError()!=null) {

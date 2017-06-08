@@ -1,0 +1,5 @@
+<person>
+  <property name="address" value="5" />
+  <property name="firstname" value="1234567890" />
+  <property name="lastname" value="The BFG" />
+</person>

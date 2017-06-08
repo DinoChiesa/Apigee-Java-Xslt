@@ -37,6 +37,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import org.xmlunit.diff.Diff;
 import org.xmlunit.builder.DiffBuilder;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class TestXsltCallout {
     private final static String testDataDir = "src/test/resources/test-data";
@@ -230,6 +232,14 @@ public class TestXsltCallout {
         else {
             String observedError = msgCtxt.getVariable("xslt_error");
             System.err.printf("    observed error: %s\n", observedError);
+            Pattern p = Pattern.compile("^Encountered ([1-9][0-9]*) errors while transforming$");
+            Matcher m = p.matcher(observedError);
+            if (m.find()) {
+                int errorCount = Integer.parseInt(m.group(1));
+                for(int i=0; i<errorCount; i++)  {
+                    System.err.printf("    error: %s\n", msgCtxt.getVariable("xslt_error_"+(i+1)));
+                }
+            }
 
             Assert.assertEquals(actualResult, expectedResult, "result not as expected");
         }

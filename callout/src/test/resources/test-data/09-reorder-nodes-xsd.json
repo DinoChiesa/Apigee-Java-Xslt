@@ -1,0 +1,18 @@
+{
+  "context" : {
+    "myxsl" : "file://09-ReOrderNodes.xsl",
+    "inputVarname" : "file://09-sample-person-input.xml",
+    "xsdVar" : "file://09-reorder-nodes.xsd"
+  },
+  "properties" : {
+    "debug" : "true",
+    "engine" : "saxon",
+    "input" : "inputVarname",
+    "xslt" : "{myxsl}",
+    "param_myxsd" : "{xsdVar}"
+  },
+  "expected" : {
+    "success" : "true",
+    "output" : "09-sample-person-reordered.xml"
+  }
+}

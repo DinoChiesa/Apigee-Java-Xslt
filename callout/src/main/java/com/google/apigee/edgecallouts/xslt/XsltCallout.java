@@ -347,7 +347,7 @@ public class XsltCallout implements Execution {
             String xsltEngine = getEngine(msgCtxt);
             cacheKey = xsltEngine + "-" + xslt;
             transformer = (Transformer) transformerPool.borrowObject(cacheKey);
-            CustomXsltErrorListener listener = new CustomXsltErrorListener(msgCtxt);
+            CustomXsltErrorListener listener = new CustomXsltErrorListener(msgCtxt, debug);
             transformer.setErrorListener(listener);
             Source input = getTransformInput(msgCtxt);
 
@@ -370,8 +370,9 @@ public class XsltCallout implements Execution {
             transformer.transform(input, xformOutput);
 
             if (listener.getErrorCount() > 0) {
-                throw new Exception("Encountered " + listener.getErrorCount() + " errors while transforming.");
+                throw new Exception("Encountered " + listener.getErrorCount() + " errors while transforming");
             }
+
             // set the result into a context variable
             String xformResult = xformOutput.getWriter().toString().trim();
             String outputVariable = getOutputVariable();
