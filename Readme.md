@@ -132,7 +132,7 @@ You can pass parameters to the XSL, like so:
      <Property name='output'>response.content</Property>
      <!-- arbitrary params to pass to the XSLT -->
      <Property name='param_x'>string value of param</Property>
-     <Property name='param_y'>file://file-embeded-in-jar.xsd</Property>
+     <Property name='param_y'>file://file-embedded-in-jar.xsd</Property>
      <Property name='param_z'>{variable-containing-one-of-the-above}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
@@ -142,7 +142,7 @@ You can pass parameters to the XSL, like so:
 
 As you can see, this configuration uses a name prefix convention for
 properties that should be passed to the XSL as parameters.  In this
-case, params x and y will be passed to the XSL. The value of these
+case, params x, y and z will be passed to the XSL. The value of these
 params can be determined by a context variable, if you enclose the text
 node in curly-braces. If you use parameters, you need to ingest them
 into the XSL like so:
