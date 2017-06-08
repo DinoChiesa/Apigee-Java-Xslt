@@ -8,10 +8,6 @@
   <xsl:strip-space elements="*"/>
 
   <xsl:param name="myxsd" select="''"/>
-
-
-  <!-- <xsl:variable name="xsd" select="document($myxsd)"/> -->
-  <!-- works with xalan? -->
   <xsl:variable name="xsd" select="document(concat('data:text/xml,',$myxsd))"/>
 
   <xsl:variable name="input">

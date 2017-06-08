@@ -19,7 +19,7 @@ All you need is the built JAR, and the appropriate configuration for the policy.
 If you want to build it, feel free.  The instructions are at the bottom of this readme. 
 
 
-1. copy the jar file, available in  target/edge-custom-xslt-1.0.4.jar , if you have built the jar, or in [the repo](bundle/apiproxy/resources/java/edge-custom-xslt-1.0.4.jar) if you have not, to your apiproxy/resources/java directory. Also copy all the required dependencies. (See below) You can do this offline, or using the graphical Proxy Editor in the Apigee Edge Admin Portal. 
+1. copy the jar file, available in  target/edge-custom-xslt-1.0.5.jar , if you have built the jar, or in [the repo](bundle/apiproxy/resources/java/edge-custom-xslt-1.0.5.jar) if you have not, to your apiproxy/resources/java directory. Also copy all the required dependencies. (See below) You can do this offline, or using the graphical Proxy Editor in the Apigee Edge Admin Portal. 
 
 2. include a Java callout policy in your
    apiproxy/resources/policies directory. It should look
@@ -31,7 +31,7 @@ If you want to build it, feel free.  The instructions are at the bottom of this 
            ....
       </Properties>
       <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-      <ResourceURL>java://edge-custom-xslt-1.0.4.jar</ResourceURL>
+      <ResourceURL>java://edge-custom-xslt-1.0.5.jar</ResourceURL>
     </JavaCallout>
    ```
    
@@ -70,7 +70,7 @@ better performance at high concurrency.
      <Property name='output'>response.content</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.4.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.5.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -132,10 +132,10 @@ You can pass parameters to the XSL, like so:
      <!-- arbitrary params to pass to the XSLT -->
      <Property name='param_x'>string value of param</Property>
      <Property name='param_y'>file://file-embeded-in-jar.xsd</Property>
-     <Property name='param_y'>{variable-containing-one-of-the-above}</Property>
+     <Property name='param_z'>{variable-containing-one-of-the-above}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.4.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.5.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -157,6 +157,48 @@ into the XSL like so:
 
 </xsl:stylesheet>
 ```
+
+## Example 3: instantiating a document from a string parameter
+
+Suppose you would like to instantiate an XML document within the XSL,
+from a string parameter. You would configure the policy like this:
+
+```xml
+<JavaCallout name='JavaCallout-Xslt-1'>
+  <Properties>
+     <Property name='xslt'>{xslturl}</Property>
+     <Property name='engine'>saxon</Property>
+     <Property name='input'>response</Property>
+     <Property name='output'>response.content</Property>
+     <!-- parameter to pass to the XSLT -->
+     <Property name='param_myxsd'>{variable-containing-xsd-string}</Property>
+  </Properties>
+  <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
+  <ResourceURL>java://edge-custom-xslt-1.0.5.jar</ResourceURL>
+</JavaCallout>
+```
+
+
+Then, to use the parameter and instantiate an XML document from it, you would use the document() function, like this:
+
+
+```xml
+<xsl:stylesheet version="2.0"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:param name="myxsd" select="''"/>
+  <xsl:variable name="xsd" select="document(concat('data:text/xml,',$myxsd))"/>
+
+  ...
+
+</xsl:stylesheet>
+```
+
+This XSL uses the data: URL scheme as described in [RFC2397](https://tools.ietf.org/html/rfc2397).
+The custom URIResolver implemented here handles only mime types of text/xml .
+
+
 
 
 ## Building

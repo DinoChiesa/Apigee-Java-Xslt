@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.apigee.callout</groupId>
   <artifactId>edge-custom-xslt</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
   <name>EdgeCustomXslt</name>
   <url>http://maven.apache.org</url>
   <packaging>jar</packaging>
@@ -219,6 +219,7 @@ mvn install:install-file \
                     <include name="lib/commons-validator-1.4.1.jar"/>
                     <include name="lib/commons-lang-2.6.jar"/>
                     <include name="lib/guava-18.0.jar"/>
+                    <include name="lib/xalan-2.7.1.jar"/>
                     <!--                    -->
                   </fileset>
                   <mapper type="flatten"/>
