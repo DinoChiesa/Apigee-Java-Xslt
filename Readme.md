@@ -10,6 +10,7 @@ does XSLT; this callout is different in that it is a bit more flexible.
 * It is possible to specify an XSLT source available at an HTTP endpoint
 * It is possible to specify parameters for the XSLT that are retrieved at an HTTP endpoint
 * It is possible to specify saxon or xalan as the XSLT engine.
+* You can use the data: URI scheme to instantiate a document in the XSL.
 
 
 ## Using this policy
@@ -178,9 +179,7 @@ from a string parameter. You would configure the policy like this:
 </JavaCallout>
 ```
 
-
 Then, to use the parameter and instantiate an XML document from it, you would use the document() function, like this:
-
 
 ```xml
 <xsl:stylesheet version="2.0"
@@ -197,7 +196,6 @@ Then, to use the parameter and instantiate an XML document from it, you would us
 
 This XSL uses the data: URL scheme as described in [RFC2397](https://tools.ietf.org/html/rfc2397).
 The custom URIResolver implemented here handles only mime types of text/xml .
-
 
 
 
