@@ -103,7 +103,7 @@ resources/filename.xsl
 You can have as many XSLs in the resources directory as you like.
 
 If a URL, the URL must return a valid XSL. The URL should be accessible
-from the message processor. The contents of the URL will be cached.
+from the message processor. The contents of the URL will be cached, currently for 10 minutes. This cache period is not confgurable, but you could change it in the source and re-compile if you like. 
 
 
 The engine property is optional, and defaults to saxon, which is included in the Apigee Edge runtime. You can also
