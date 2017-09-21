@@ -1,5 +1,4 @@
 {
-  "not-used-input" : "Sample-Soap.xml",
   "context" : {
     "myxsl" : "file://Sample-Soap-ReOrderNodes.xsl",
     "inputVarname" : "file://Sample-Soap.xml"

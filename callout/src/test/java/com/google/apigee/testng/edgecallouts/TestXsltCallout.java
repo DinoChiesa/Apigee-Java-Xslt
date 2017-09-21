@@ -114,7 +114,7 @@ public class TestXsltCallout {
         // each inner Object[] must have length 1.
 
         ObjectMapper om = new ObjectMapper();
-        om.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        om.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
         // Path currentRelativePath = Paths.get("");
         // String s = currentRelativePath.toAbsolutePath().toString();
