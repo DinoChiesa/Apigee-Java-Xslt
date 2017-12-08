@@ -13,6 +13,11 @@ does XSLT; this callout is different in that it is a bit more flexible.
 * You can use the data: URI scheme to instantiate a document in the XSL.
 
 
+
+## Disclaimer
+
+This example is not an official Google product, nor is it part of an official Google product.
+
 ## Using this policy
 
 You do not need to build the source code in order to use the policy in Apigee Edge.
@@ -200,9 +205,9 @@ Then, to use the parameter and instantiate an XML document from it, you would us
 ```
 
 As one specific example where you might want to do this, imagine you have an XSD (which itself is an XML document),
-which defines a schema, containing elements in a particular order. And you would like to re-order the elements in a given document, to match the order given in the XSD. 
+which defines a schema, containing elements in a particular order. And you would like to re-order the elements in a given document, to match the order given in the XSD.
 
-In that case, the policy configuration would be like this: 
+In that case, the policy configuration would be like this:
 
 ```xml
 <JavaCallout name='JavaCallout-Xslt-1'>
@@ -219,7 +224,7 @@ In that case, the policy configuration would be like this:
 </JavaCallout>
 ```
 
-And the XSL might be like this: 
+And the XSL might be like this:
 
 ```xml
 <xsl:stylesheet version="2.0"
