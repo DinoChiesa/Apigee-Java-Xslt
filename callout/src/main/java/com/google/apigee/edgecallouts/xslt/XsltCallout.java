@@ -134,18 +134,14 @@ public class XsltCallout implements Execution {
         this.properties = m;
 
         /**
-         * transformers is a keyed pool of Transformer objects. The key is the
-         * xslt engine joined by a dash with the XSLT sheet. Example:
-         * "saxon-transformResponse.xsl". The pool is not limited in size; it
-         * expands to meet concurrent demand. It contracts to the
-         * MAX_IDLE_TRANSFORMERS in low contention conditions. The idea is that
-         * if we have 25 concurrent requests, all of them can have their own
-         * Transformer object; but those objects get returned to a pool for
-         * re-use so we don't have to create one for each request.
+         * transformers is a keyed pool of Transformer objects. The key is the xslt engine
+         * joined by a dash with the XSLT sheet. Example: "saxon-transformResponse.xsl". The
+         * pool is not limited in size; it expands to meet concurrent demand. It contracts to
+         * the MAX_IDLE_TRANSFORMERS in low contention conditions. The idea is that if we have
+         * 25 concurrent requests, all of them can have their own Transformer object; but those
+         * objects get returned to a pool for re-use so we don't have to create one for each
+         * request.
          *
-         * Currently, Apigee Edge uses commons-pool-1.5.4.jar, which exposes
-         * non-generic types like StackKeyedObjectPool. In v1.6 of
-         * commons-pool, the types are generic.
          */
         this.transformerPool =
             new StackKeyedObjectPool<String, Transformer>(new PooledTransformerFactory(), MAX_IDLE_TRANSFORMERS);
@@ -394,16 +390,10 @@ public class XsltCallout implements Execution {
             calloutResult = ExecutionResult.SUCCESS;
         }
         catch (Exception e) {
-            if (debug) e.printStackTrace(); // to MP stdout
-            String error = error = e.toString();
-            msgCtxt.setVariable(varName("exception"), error);
-            int ch = error.lastIndexOf(':');
-            if (ch >= 0) {
-                msgCtxt.setVariable(varName("error"), error.substring(ch+2).trim());
-            }
-            else {
-                msgCtxt.setVariable(varName("error"), error);
-            }
+            if (debug)
+                System.out.println(ExceptionUtils.getStackTrace(e));
+            msgCtxt.setVariable(varName("exception"), e.toString());
+            msgCtxt.setVariable(varName("error"), e.getMessage());
             if (e instanceof PoolException) {
                 msgCtxt.setVariable(varName("additionalInformation"),
                                     ((PoolException)e).getAdditionalInformation());

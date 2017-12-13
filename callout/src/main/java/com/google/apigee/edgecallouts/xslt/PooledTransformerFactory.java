@@ -24,6 +24,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.ErrorListener;
 
 // Apache Commons stuff
 import org.apache.commons.io.IOUtils;
@@ -34,19 +35,11 @@ import org.apache.commons.validator.routines.UrlValidator;
 public class PooledTransformerFactory
     extends BaseKeyedPoolableObjectFactory<String, Transformer> {
 
-    private Map<String,TransformerFactory> factoryCache;
-
     public PooledTransformerFactory() {
-        this.factoryCache = new HashMap<String,TransformerFactory>();
     }
 
     private TransformerFactory getTransformerFactory(String engine){
-        TransformerFactory tf = this.factoryCache.get(engine);
-        if (tf == null) {
-            tf = TransformerFactory.newInstance(engine, null);
-            tf.setErrorListener(new SimpleErrorListener());
-            this.factoryCache.put(engine, tf);
-        }
+        TransformerFactory tf = TransformerFactory.newInstance(engine, null);
         return tf;
     }
 
@@ -104,17 +97,22 @@ public class PooledTransformerFactory
         String engine = parts[0];
         String xslt = parts[1];
         TransformerFactory tf = getTransformerFactory(engine);
-        SimpleErrorListener listener = (SimpleErrorListener) tf.getErrorListener();
+        SimpleErrorListener errorListener = new SimpleErrorListener();
+        // This handles errors that occur when creating the transformer. Eg, XSL malformed.
+        tf.setErrorListener(errorListener);
         try {
-            listener.reset();
             Source xsltSource = convertXsltToSource(xslt);
             t = tf.newTransformer(xsltSource);
             t.setURIResolver(new DataURIResolver(t.getURIResolver()));
+            // if (t instanceof net.sf.saxon.jaxp.TransformerImpl) {
+            //     net.sf.saxon.Controller c = t.getUnderlyingController();
+            //     // c.setMessageEmitter(Receiver r);
+            // }
         }
         catch (javax.xml.transform.TransformerConfigurationException tce1) {
-            if (listener.getXsltError()!=null) {
+            if (errorListener.getXsltError()!=null) {
                 throw new PoolException(tce1.getMessage(),
-                                        listener.getXsltError(),
+                                        errorListener.getXsltError(),
                                         tce1);
             }
             else {
@@ -145,14 +143,15 @@ public class PooledTransformerFactory
      */
     @Override
     public void passivateObject(String /*Object*/ key, Transformer /*Object*/ t) throws Exception {
-        ((Transformer)t).reset();
+        t.reset();
+        ((SimpleErrorListener)t.getErrorListener()).reset();
     }
 
     /**
      * This class simply catches and stores the most recent error, for
      * later retrieval. Last write wins.
      */
-    final class SimpleErrorListener implements javax.xml.transform.ErrorListener {
+    final class SimpleErrorListener implements ErrorListener {
         private String xsltError;
         public void error(TransformerException exception) {
             xsltError = exception.toString();

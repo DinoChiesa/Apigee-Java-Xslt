@@ -9,6 +9,6 @@
   },
   "expected" : {
     "success" : "false",
-    "error" : "invalid xslt"
+    "error" : "configuration error: invalid xslt"
   }
 }

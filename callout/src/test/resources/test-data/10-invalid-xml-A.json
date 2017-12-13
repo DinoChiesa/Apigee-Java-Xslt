@@ -1,0 +1,15 @@
+{
+  "context" : {
+    "myxsl" : "file://stripNamespaces.xsl",
+    "inputUrl" : "file://Broken.xml"
+  },
+  "properties" : {
+    "debug" : "false",
+    "input" : "inputUrl",
+    "xslt" : "{myxsl}"
+  },
+  "expected" : {
+    "success" : "false",
+    "error" : "org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 16; The prefix \"nfs\" for element \"nfs:something\" is not bound."
+  }
+}

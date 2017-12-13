@@ -8,6 +8,6 @@
   },
   "expected" : {
     "success" : "false",
-    "error" : "no xslt property"
+    "error" : "configuration error: no xslt property"
   }
 }

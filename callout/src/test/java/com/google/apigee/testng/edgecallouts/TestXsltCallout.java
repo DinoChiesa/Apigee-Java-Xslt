@@ -12,47 +12,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+
 package com.google.apigee.testng.edgecallouts;
 
+import com.apigee.flow.execution.ExecutionContext;
+import com.apigee.flow.execution.ExecutionResult;
+import com.apigee.flow.message.Message;
+import com.apigee.flow.message.MessageContext;
+import com.google.apigee.edgecallouts.xslt.XsltCallout;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.IOUtils;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import mockit.Mock;
 import mockit.MockUp;
-
-import com.apigee.flow.execution.ExecutionContext;
-import com.apigee.flow.execution.ExecutionResult;
-import com.apigee.flow.message.MessageContext;
-import com.apigee.flow.message.Message;
-
-import com.google.apigee.edgecallouts.xslt.XsltCallout;
-
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
-
-import org.xmlunit.diff.Diff;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 import org.xmlunit.builder.DiffBuilder;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import org.xmlunit.diff.Diff;
 
 public class TestXsltCallout {
     private final static String testDataDir = "src/test/resources/test-data";
@@ -143,6 +138,7 @@ public class TestXsltCallout {
         if (files.length == 0) {
             throw new IllegalStateException("no tests found.");
         }
+        Arrays.sort(files);
         int c=0;
         ArrayList<TestCase> list = new ArrayList<TestCase>();
         for (File file : files) {
@@ -153,7 +149,6 @@ public class TestXsltCallout {
                 list.add(tc);
             }
         }
-
         // OMG!!  Seriously? Is this the easiest way to generate a 2-d array?
         int n = list.size();
         Object[][] data = new Object[n][];
@@ -240,7 +235,7 @@ public class TestXsltCallout {
                 String expectedError = tc.getExpected().get("error");
                 Assert.assertNotNull(expectedError, "broken test: no expected error specified");
                 String actualError = msgCtxt.getVariable("xslt_error");
-                Assert.assertEquals(actualError, expectedError, "error not as expected");
+                Assert.assertEquals(actualError, expectedError, tc.getTestName() + " error");
             }
         }
         else {

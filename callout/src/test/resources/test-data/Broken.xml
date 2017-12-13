@@ -1,0 +1,10 @@
+<nfs:something>
+ <Header>foo</Header>
+  <element2>
+    <OperationName>
+      <ElementZ/>
+      <ElementY/>
+      <ElementX/>
+    </OperationName>
+  </element2>
+</nfs:something>

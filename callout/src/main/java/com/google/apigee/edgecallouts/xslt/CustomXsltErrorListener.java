@@ -16,7 +16,7 @@ package com.google.apigee.edgecallouts.xslt;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
-
+import org.apache.commons.lang.exception.ExceptionUtils;
 import com.apigee.flow.message.MessageContext;
 
 public class CustomXsltErrorListener implements javax.xml.transform.ErrorListener {
@@ -44,7 +44,7 @@ public class CustomXsltErrorListener implements javax.xml.transform.ErrorListene
         _errorCount++;
         if (_debug) {
             System.out.printf("Error\n");
-            exception.printStackTrace();
+            System.out.printf(ExceptionUtils.getStackTrace(exception));
         }
         _msgCtxt.setVariable(varName("error_" + _errorCount), "Error:" + exception.toString());
     }
@@ -52,7 +52,7 @@ public class CustomXsltErrorListener implements javax.xml.transform.ErrorListene
         _errorCount++;
         if (_debug) {
             System.out.printf("Fatal\n");
-            exception.printStackTrace();
+            System.out.printf(ExceptionUtils.getStackTrace(exception));
         }
         _msgCtxt.setVariable(varName("error_" + _errorCount), "Fatal Error:" + exception.toString());
     }
@@ -61,7 +61,7 @@ public class CustomXsltErrorListener implements javax.xml.transform.ErrorListene
         _warnCount++;
         if (_debug) {
             System.out.printf("Warning\n");
-            exception.printStackTrace();
+            System.out.printf(ExceptionUtils.getStackTrace(exception));
         }
         _msgCtxt.setVariable(varName("warning_" + _warnCount), "Warning:" + exception.toString());
     }

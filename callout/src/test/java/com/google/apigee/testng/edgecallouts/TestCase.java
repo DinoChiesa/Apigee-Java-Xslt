@@ -16,7 +16,7 @@ package com.google.apigee.testng.edgecallouts;
 
 import java.util.HashMap;
 
-public class TestCase {
+public class TestCase implements Comparable {
 
     private String _testName;
     private String _description;
@@ -40,4 +40,9 @@ public class TestCase {
     public void setExpected(HashMap<String,String> hash) { _expected = hash; }
     public void setContext(HashMap<String,String> hash) { _context = hash; }
     public void setProperties(HashMap<String,String> hash) { _properties = hash; }
+
+    @Override
+    public int compareTo(Object tc) {
+        return getTestName().compareTo( ((TestCase)tc).getTestName() );
+    }
 }

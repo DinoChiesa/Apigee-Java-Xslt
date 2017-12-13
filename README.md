@@ -25,7 +25,7 @@ All you need is the built JAR, and the appropriate configuration for the policy.
 If you want to build it, feel free.  The instructions are at the bottom of this readme.
 
 
-1. copy the jar file, available in  target/edge-custom-xslt-1.0.5.jar , if you have built the jar, or in [the repo](bundle/apiproxy/resources/java/edge-custom-xslt-1.0.5.jar) if you have not, to your apiproxy/resources/java directory. Also copy all the required dependencies. (See below) You can do this offline, or using the graphical Proxy Editor in the Apigee Edge Admin Portal.
+1. copy the jar file, available in  target/edge-custom-xslt-1.0.6.jar , if you have built the jar, or in [the repo](bundle/apiproxy/resources/java/edge-custom-xslt-1.0.6.jar) if you have not, to your apiproxy/resources/java directory. Also copy all the required dependencies. (See below) You can do this offline, or using the graphical Proxy Editor in the Apigee Edge Admin Portal.
 
 2. include a Java callout policy in your
    apiproxy/resources/policies directory. It should look
@@ -37,7 +37,7 @@ If you want to build it, feel free.  The instructions are at the bottom of this 
            ....
       </Properties>
       <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-      <ResourceURL>java://edge-custom-xslt-1.0.5.jar</ResourceURL>
+      <ResourceURL>java://edge-custom-xslt-1.0.6.jar</ResourceURL>
     </JavaCallout>
    ```
 
@@ -76,7 +76,7 @@ better performance at high concurrency.
      <Property name='output'>response.content</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.5.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.6.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -141,7 +141,7 @@ You can pass parameters to the XSL, like so:
      <Property name='param_z'>{variable-containing-one-of-the-above}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.5.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.6.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -185,7 +185,7 @@ You would configure the policy like this:
      <Property name='param_myxmldoc'>{variable-containing-xml-string}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.5.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.6.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -220,7 +220,7 @@ In that case, the policy configuration would be like this:
      <Property name='param_myxsd'>{variable-containing-xsd-string}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.5.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.6.jar</ResourceURL>
 </JavaCallout>
 ```
 
