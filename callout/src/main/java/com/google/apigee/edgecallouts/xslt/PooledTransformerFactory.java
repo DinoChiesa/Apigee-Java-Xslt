@@ -40,6 +40,7 @@ public class PooledTransformerFactory
 
     private TransformerFactory getTransformerFactory(String engine){
         TransformerFactory tf = TransformerFactory.newInstance(engine, null);
+        //tf.setAttribute(FeatureKeys.MESSAGE_EMITTER_CLASS, MyMessageEmitter.class)
         return tf;
     }
 
