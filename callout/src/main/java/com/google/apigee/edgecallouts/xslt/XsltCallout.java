@@ -302,7 +302,10 @@ public class XsltCallout implements Execution {
         while (matcher.find()) {
             matcher.appendReplacement(sb, "");
             sb.append(matcher.group(1));
-            sb.append((String) msgCtxt.getVariable(matcher.group(2)));
+            Object v = msgCtxt.getVariable(matcher.group(2));
+            if (v != null){
+                sb.append((String) v );
+            }
             sb.append(matcher.group(3));
         }
         matcher.appendTail(sb);
