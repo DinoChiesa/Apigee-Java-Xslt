@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.apigee.callout</groupId>
   <artifactId>edge-custom-xslt</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.7</version>
   <name>EdgeCustomXslt</name>
   <url>http://maven.apache.org</url>
   <packaging>jar</packaging>
@@ -16,6 +16,12 @@
     <apiproxy.java.rsrc.dir>../bundle/apiproxy/resources/java</apiproxy.java.rsrc.dir>
     <testng.version>6.8.7</testng.version> <!-- current: 6.9.4 -->
     <jmockit.version>1.7</jmockit.version>
+    <jackson.version>2.9.2</jackson.version>
+    <guava.version>25.1-jre</guava.version>
+    <commons.codec.version>1.11</commons.codec.version>
+    <commons.lang.version>2.6</commons.lang.version>
+    <commons.pool.version>1.6</commons.pool.version>
+    <commons.validator.version>1.4.1</commons.validator.version>
   </properties>
 
   <dependencies>
@@ -23,29 +29,25 @@
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>2.6</version>
-      <scope>compile</scope>
+      <version>${commons.lang.version}</version>
     </dependency>
 
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.6</version>
+      <version>${commons.codec.version}</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
     <dependency>
-    <groupId>commons-io</groupId>
-    <artifactId>commons-io</artifactId>
-    <version>2.0.1</version>
-      <scope>compile</scope>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.0.1</version>
     </dependency>
 
     <dependency>
       <groupId>commons-validator</groupId>
       <artifactId>commons-validator</artifactId>
-      <version>1.4.1</version>
-      <scope>compile</scope>
+      <version>${commons.validator.version}</version>
     </dependency>
 
     <dependency>
@@ -64,14 +66,14 @@
     <dependency>
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
-      <version>1.6</version>
+      <version>${commons.pool.version}</version>
       <!-- <scope>provided</scope> -->
     </dependency>
 
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>18.0</version>
+      <version>${guava.version}</version>
     </dependency>
 
     <!--
@@ -113,16 +115,16 @@ mvn install:install-file \
     </dependency>
 
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-      <version>1.9.7</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.9.7</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -136,7 +138,7 @@ mvn install:install-file \
     <dependency>
       <groupId>com.googlecode.jmockit</groupId>
       <artifactId>jmockit</artifactId>
-      <version>1.7</version>
+      <version>${jmockit.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -175,7 +177,7 @@ mvn install:install-file \
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.7.0</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -185,16 +187,7 @@ mvn install:install-file \
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.6</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-
+        <version>3.0.2</version>
         <configuration>
           <archive>
             <!-- do not include the pom.xml file in the generated jar -->
@@ -215,12 +208,12 @@ mvn install:install-file \
                   <fileset dir="${project.build.directory}">
                     <include name="${project.artifactId}-${project.version}.jar"/>
                     <!-- copy required dependencies: -->
-                    <include name="lib/commons-pool-1.6.jar"/>
-                    <include name="lib/commons-validator-1.4.1.jar"/>
-                    <include name="lib/commons-lang-2.6.jar"/>
-                    <include name="lib/commons-codec-1.6.jar"/>
-                    <include name="lib/guava-18.0.jar"/>
-                    <include name="lib/xalan-2.7.1.jar"/>
+                    <include name="lib/commons-pool-${commons.pool.version}.jar"/>
+                    <include name="lib/commons-validator-${commons.validator.version}.jar"/>
+                    <include name="lib/commons-lang-${commons.lang.version}.jar"/>
+                    <include name="lib/commons-codec-${commons.codec.version}.jar"/>
+                    <include name="lib/guava-${guava.version}.jar"/>
+                    <include name="lib/xalan-${xalan.version}.jar"/>
                     <!--                    -->
                   </fileset>
                   <mapper type="flatten"/>

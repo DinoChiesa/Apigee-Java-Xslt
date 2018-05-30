@@ -6,7 +6,7 @@
 // XSLT engine (eg, saxon, xalan), and the XSLT stylesheet name or url (eg,
 // transformResponse.xsl) .
 //
-// Copyright 2015-2017 Google Inc.
+// Copyright 2015-2018 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -52,13 +52,11 @@
 //   <ResourceURL>java://edgecallout-xslt.jar</ResourceURL>
 // </JavaCallout>
 //
-//
 // ----------------------------------------------------------
 //
 // This software is licensed under the Apache Source license 2.0.
 // See the accompanying LICENSE file.
 //
-// Copyright (c) 2015, 2016 by Dino Chiesa and Apigee Corporation, 2017 Google Inc.
 //
 
 package com.google.apigee.edgecallouts.xslt;
@@ -82,7 +80,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 
 import com.apigee.flow.execution.ExecutionContext;
 import com.apigee.flow.execution.ExecutionResult;
@@ -181,7 +178,7 @@ public class XsltCallout implements Execution {
                         String s = "";
                         try {
                             URL url = new URL(key);
-                            in = url.openStream ();
+                            in = url.openStream();
                             s = new String(IOUtils.toByteArray(in), StandardCharsets.UTF_8);
                         }
                         catch (java.lang.Exception exc1) {
@@ -293,7 +290,7 @@ public class XsltCallout implements Execution {
         return engine;
     }
 
-    // If the value of a property contains a pair of curlies,
+    // If the value of a property contains one or more pairs of curlies,
     // eg, {apiproxy.name}, then "resolve" the value by de-referencing
     // any context variable whose name appears between the curlies.
     private String resolvePropertyValue(String spec, MessageContext msgCtxt) {
@@ -304,7 +301,7 @@ public class XsltCallout implements Execution {
             sb.append(matcher.group(1));
             Object v = msgCtxt.getVariable(matcher.group(2));
             if (v != null){
-                sb.append((String) v );
+                sb.append((String) v);
             }
             sb.append(matcher.group(3));
         }

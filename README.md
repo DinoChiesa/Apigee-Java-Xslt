@@ -1,4 +1,4 @@
-# Java callout for Xslt
+# Java callout for XSLT
 
 This directory contains the Java source code required to compile a Java
 callout for Apigee Edge that does XSLT. There's a built-in policy that
@@ -20,12 +20,13 @@ This example is not an official Google product, nor is it part of an official Go
 
 ## Using this policy
 
-You do not need to build the source code in order to use the policy in Apigee Edge.
-All you need is the built JAR, and the appropriate configuration for the policy.
-If you want to build it, feel free.  The instructions are at the bottom of this readme.
+You need to build the source code in order to use the policy in Apigee Edge, in order to download all the dependencies.
 
+The instructions are at the bottom of this README.
 
-1. copy the jar file, available in  target/edge-custom-xslt-1.0.6.jar , if you have built the jar, or in [the repo](bundle/apiproxy/resources/java/edge-custom-xslt-1.0.6.jar) if you have not, to your apiproxy/resources/java directory. Also copy all the required dependencies. (See below) You can do this offline, or using the graphical Proxy Editor in the Apigee Edge Admin Portal.
+After you build it,
+
+1. copy the jar file, available in  target/edge-custom-xslt-1.0.7.jar , if you have built the jar, or in [the repo](bundle/apiproxy/resources/java/edge-custom-xslt-1.0.7.jar) if you have not, to your apiproxy/resources/java directory. Also copy all the required dependencies. (See below) You can do this offline, or using the graphical Proxy Editor in the Apigee Edge Admin Portal.
 
 2. include a Java callout policy in your
    apiproxy/resources/policies directory. It should look
@@ -37,7 +38,7 @@ If you want to build it, feel free.  The instructions are at the bottom of this 
            ....
       </Properties>
       <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-      <ResourceURL>java://edge-custom-xslt-1.0.6.jar</ResourceURL>
+      <ResourceURL>java://edge-custom-xslt-1.0.7.jar</ResourceURL>
     </JavaCallout>
    ```
 
@@ -76,7 +77,7 @@ better performance at high concurrency.
      <Property name='output'>response.content</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.6.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.7.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -108,7 +109,7 @@ resources/filename.xsl
 You can have as many XSLs in the resources directory as you like.
 
 If a URL, the URL must return a valid XSL. The URL should be accessible
-from the message processor. The contents of the URL will be cached, currently for 10 minutes. This cache period is not confgurable, but you could change it in the source and re-compile if you like. 
+from the message processor. The contents of the URL will be cached, currently for 10 minutes. This cache period is not confgurable, but you could change it in the source and re-compile if you like.
 
 
 The engine property is optional, and defaults to saxon, which is included in the Apigee Edge runtime. You can also
@@ -141,7 +142,7 @@ You can pass parameters to the XSL, like so:
      <Property name='param_z'>{variable-containing-one-of-the-above}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.6.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.7.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -185,7 +186,7 @@ You would configure the policy like this:
      <Property name='param_myxmldoc'>{variable-containing-xml-string}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.6.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.7.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -220,7 +221,7 @@ In that case, the policy configuration would be like this:
      <Property name='param_myxsd'>{variable-containing-xsd-string}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.6.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.7.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -296,8 +297,9 @@ Pull requests are welcomed!
 
 ## License
 
-This material is Copyright 2017, Google LLC.
-and is licensed under the [Apache 2.0 License](LICENSE). This includes the Java code as well as the API Proxy configuration.
+This material is Copyright 2017-2018, Google LLC.  and is licensed under
+the [Apache 2.0 License](LICENSE). This includes the Java code as well
+as the API Proxy configuration.
 
 
 ## Support
