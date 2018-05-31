@@ -9,6 +9,6 @@
   },
   "expected" : {
     "success" : "false",
-    "error" : "configuration error: xslt resolves to null or empty"
+    "error" : "configuration error: xslt resolves to an empty string"
   }
 }

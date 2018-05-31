@@ -102,33 +102,21 @@ import com.google.common.base.Predicate;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheLoader;
+import com.google.apigee.edgecallouts.CalloutBase;
 
 @IOIntensive
-public class XsltCallout implements Execution {
+public class XsltCallout extends CalloutBase implements Execution {
     // The default cap on the number of "sleeping" instances in the pool.
     private static final String varPrefix = "xslt_";
     protected static final int MAX_IDLE_TRANSFORMERS = 20;
-    private static final String variableReferencePatternString = "(.*?)\\{([^\\{\\}]+?)\\}(.*?)";
-    private final static Pattern variableReferencePattern = Pattern.compile(variableReferencePatternString);
     private static final String urlReferencePatternString = "^(https?://)(.+)$";
     private final static Pattern urlReferencePattern = Pattern.compile(urlReferencePatternString);
     private LoadingCache<String, String> fileResourceCache;
     private LoadingCache<String, String> urlResourceCache;
     private KeyedObjectPool transformerPool;
-    private Map<String,String> properties; // read-only
 
     public XsltCallout (Map properties) {
-        // convert the untyped Map to a generic map
-        Map<String,String> m = new HashMap<String,String>();
-        Iterator iterator =  properties.keySet().iterator();
-        while(iterator.hasNext()){
-            Object key = iterator.next();
-            Object value = properties.get(key);
-            if ((key instanceof String) && (value instanceof String)) {
-                m.put((String) key, (String) value);
-            }
-        }
-        this.properties = m;
+        super(properties);
 
         /**
          * transformers is a keyed pool of Transformer objects. The key is the xslt engine
@@ -192,16 +180,8 @@ public class XsltCallout implements Execution {
                 });
     }
 
-    private static String varName(String s) {
-        return varPrefix + s;
-    }
-
-    private String getOutputVariable() {
-        String outputVar = (String) this.properties.get("output");
-        if (outputVar == null || outputVar.equals("")) {
-            return "message.content";
-        }
-        return outputVar;
+    public String getVarnamePrefix() {
+        return varPrefix;
     }
 
     private String getInputProperty() {
@@ -210,13 +190,6 @@ public class XsltCallout implements Execution {
             return "message";
         }
         return inputProp;
-    }
-
-    private boolean getDebug() {
-        String value = (String) this.properties.get("debug");
-        if (value == null) return false;
-        if (value.trim().toLowerCase().equals("true")) return true;
-        return false;
     }
 
     private Source getTransformInput(MessageContext msgCtxt)
@@ -244,22 +217,9 @@ public class XsltCallout implements Execution {
         return source;
     }
 
-    private String getXslt(MessageContext msgCtxt)
-        throws IllegalStateException, IOException, ExecutionException {
-        String xslt = (String) this.properties.get("xslt");
-        Source source = null;
-        if (xslt == null) {
-            throw new IllegalStateException("configuration error: no xslt property");
-        }
-        if (xslt.equals("")) {
-            throw new IllegalStateException("configuration error: xslt property is empty");
-        }
-        xslt = resolvePropertyValue(xslt, msgCtxt);
-        if (xslt == null || xslt.equals("")) {
-            throw new IllegalStateException("configuration error: xslt resolves to null or empty");
-        }
-        xslt = xslt.trim();
-        xslt = maybeResolveUrlReference(xslt);
+    private String getXslt(MessageContext msgCtxt) throws Exception {
+        String xslt = getSimpleRequiredProperty("xslt", msgCtxt);
+        xslt = maybeResolveUrlReference(xslt.trim());
         return xslt;
     }
 
@@ -288,25 +248,6 @@ public class XsltCallout implements Execution {
             throw new IllegalStateException("configuration error: unknown XSLT engine: " + engine);
         }
         return engine;
-    }
-
-    // If the value of a property contains one or more pairs of curlies,
-    // eg, {apiproxy.name}, then "resolve" the value by de-referencing
-    // any context variable whose name appears between the curlies.
-    private String resolvePropertyValue(String spec, MessageContext msgCtxt) {
-        Matcher matcher = variableReferencePattern.matcher(spec);
-        StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(sb, "");
-            sb.append(matcher.group(1));
-            Object v = msgCtxt.getVariable(matcher.group(2));
-            if (v != null){
-                sb.append((String) v);
-            }
-            sb.append(matcher.group(3));
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
     }
 
     private static InputStream getResourceAsStream(String resourceName) throws IOException {
@@ -385,7 +326,7 @@ public class XsltCallout implements Execution {
 
             // set the result into a context variable
             String xformResult = xformOutput.getWriter().toString().trim();
-            String outputVariable = getOutputVariable();
+            String outputVariable = getOutputVar(msgCtxt);
             msgCtxt.setVariable(outputVariable, xformResult);
             calloutResult = ExecutionResult.SUCCESS;
         }
