@@ -19,6 +19,7 @@
     <jackson.version>2.9.2</jackson.version>
     <guava.version>25.1-jre</guava.version>
     <commons.codec.version>1.11</commons.codec.version>
+    <commons.io.version>2.0.1</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
     <commons.pool.version>1.6</commons.pool.version>
     <commons.validator.version>1.4.1</commons.validator.version>
@@ -41,7 +42,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.0.1</version>
+      <version>${commons.io.version}</version>
     </dependency>
 
     <dependency>
@@ -211,6 +212,7 @@ mvn install:install-file \
                     <include name="lib/commons-pool-${commons.pool.version}.jar"/>
                     <include name="lib/commons-validator-${commons.validator.version}.jar"/>
                     <include name="lib/commons-lang-${commons.lang.version}.jar"/>
+                    <include name="lib/commons-io-${commons.io.version}.jar"/>
                     <include name="lib/commons-codec-${commons.codec.version}.jar"/>
                     <include name="lib/guava-${guava.version}.jar"/>
                     <include name="lib/xalan-${xalan.version}.jar"/>
