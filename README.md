@@ -266,7 +266,7 @@ The custom URIResolver implemented here handles only mime types of text/xml .
 
 ## Building
 
-Building from source requires Java 1.7, and Maven.
+Building from source requires Java 1.8, and Maven.
 
 1. unpack (if you can read this, you've already done that).
 
