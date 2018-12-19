@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.apigee.callout</groupId>
   <artifactId>edge-custom-xslt</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
   <name>EdgeCustomXslt</name>
   <url>http://maven.apache.org</url>
   <packaging>jar</packaging>
@@ -16,8 +16,8 @@
     <apiproxy.java.rsrc.dir>../bundle/apiproxy/resources/java</apiproxy.java.rsrc.dir>
     <testng.version>6.8.7</testng.version> <!-- current: 6.9.4 -->
     <jmockit.version>1.7</jmockit.version>
-    <jackson.version>2.9.2</jackson.version>
-    <guava.version>25.1-jre</guava.version>
+    <jackson.version>2.9.5</jackson.version>
+    <guava.version>26.0-jre</guava.version>
     <commons.codec.version>1.11</commons.codec.version>
     <commons.io.version>2.0.1</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
