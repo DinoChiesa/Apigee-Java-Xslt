@@ -22,11 +22,11 @@ This example is not an official Google product, nor is it part of an official Go
 
 You need to build the source code in order to use the policy in Apigee Edge, in order to download all the dependencies.
 
-The instructions are at the bottom of this README.
+The instructions to do so are at the bottom of this README.
 
 After you build it,
 
-1. copy the jar file, available in  target/edge-custom-xslt-1.0.9.jar , if you have built the jar, or in [the repo](bundle/apiproxy/resources/java/edge-custom-xslt-1.0.9.jar) if you have not, to your apiproxy/resources/java directory. Also copy all the required dependencies. (See below) You can do this offline, or using the graphical Proxy Editor in the Apigee Edge Admin Portal.
+1. copy the jar file, available in  target/edge-custom-xslt-1.0.10.jar , if you have built the jar, or in [the repo](bundle/apiproxy/resources/java/edge-custom-xslt-1.0.10.jar) if you have not, to your apiproxy/resources/java directory. Also copy all the required dependencies. (See below) You can do this offline, or using the graphical Proxy Editor in the Apigee Edge Admin Portal.
 
 2. include a Java callout policy in your
    apiproxy/resources/policies directory. It should look
@@ -38,12 +38,11 @@ After you build it,
            ....
       </Properties>
       <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-      <ResourceURL>java://edge-custom-xslt-1.0.9.jar</ResourceURL>
+      <ResourceURL>java://edge-custom-xslt-1.0.10.jar</ResourceURL>
     </JavaCallout>
    ```
 
-5. use the Edge UI, or a command-line tool like pushapi (See
-   https://github.com/carloseberhardt/apiploy) or similar to
+5. use the Edge UI, or a command-line tool like [importAndDeploy.js](https://github.com/DinoChiesa/apigee-edge-js/blob/master/examples/importAndDeploy.js) or similar to
    import the proxy into an Edge organization, and then deploy the proxy .
 
 6. use a client to generate and send http requests to tickle the proxy.
@@ -77,7 +76,7 @@ better performance at high concurrency.
      <Property name='output'>response.content</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.9.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.10.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -142,7 +141,7 @@ You can pass parameters to the XSL, like so:
      <Property name='param_z'>{variable-containing-one-of-the-above}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.9.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.10.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -186,7 +185,7 @@ You would configure the policy like this:
      <Property name='param_myxmldoc'>{variable-containing-xml-string}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.9.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.10.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -221,7 +220,7 @@ In that case, the policy configuration would be like this:
      <Property name='param_myxsd'>{variable-containing-xsd-string}</Property>
   </Properties>
   <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://edge-custom-xslt-1.0.9.jar</ResourceURL>
+  <ResourceURL>java://edge-custom-xslt-1.0.10.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -297,7 +296,7 @@ Pull requests are welcomed!
 
 ## License
 
-This material is Copyright 2017-2018, Google LLC.  and is licensed under
+This material is Copyright (c) 2017-2019, Google LLC.  and is licensed under
 the [Apache 2.0 License](LICENSE). This includes the Java code as well
 as the API Proxy configuration.
 
