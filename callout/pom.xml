@@ -17,7 +17,7 @@
     <testng.version>6.8.7</testng.version> <!-- current: 6.9.4 -->
     <jmockit.version>1.7</jmockit.version>
     <jackson.version>[2.9.10.1,)</jackson.version>
-    <guava.version>26.0-jre</guava.version>
+    <guava.version>29.0-jre</guava.version>
     <commons.pool.version>1.6</commons.pool.version>
     <commons.validator.version>1.4.1</commons.validator.version>
   </properties>
