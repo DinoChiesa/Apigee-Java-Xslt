@@ -1,4 +1,4 @@
-// Copyright 2015-2018 Google LLC.
+// Copyright 2015-2020 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@ package com.google.apigee.edgecallouts.xslt;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
@@ -24,68 +27,18 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
-import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
-import org.apache.commons.validator.routines.UrlValidator;
 
-public class PooledTransformerFactory extends BaseKeyedPoolableObjectFactory<String, Transformer> {
+public class CustomTransformerFactory {
 
-  public PooledTransformerFactory() {}
-
-  private TransformerFactory getTransformerFactory(String engine) {
-    TransformerFactory tf = TransformerFactory.newInstance(engine, null);
-    // tf.setAttribute(FeatureKeys.MESSAGE_EMITTER_CLASS, MyMessageEmitter.class)
-    return tf;
-  }
-
-  private static InputStream getResourceAsStream(String resourceName) throws IOException {
-    // forcibly prepend a slash
-    if (!resourceName.startsWith("/")) {
-      resourceName = "/" + resourceName;
-    }
-    if (!resourceName.startsWith("/resources")) {
-      resourceName = "/resources" + resourceName;
-    }
-    InputStream in = PooledTransformerFactory.class.getResourceAsStream(resourceName);
-
-    if (in == null) {
-      throw new IOException("resource \"" + resourceName + "\" not found");
-    }
-
-    return in;
-  }
-
-  private Source convertXsltToSource(String xslt) throws IOException {
-    // check for the kind of xslt. URI, filename, or string
-    Source source = null;
-    UrlValidator urlv = new UrlValidator();
-
-    if (urlv.isValid(xslt)) {
-      // Is URL, therefore instantiate StreamSource directly from URI
-      // varName = prefix + "_xslturl";
-      // msgCtxt.setVariable(varName, xslt);
-      source = new StreamSource(xslt);
-    } else if (xslt.endsWith(".xsl") || xslt.endsWith(".xslt")) {
-      // assume this is a stream resource in the JAR
-      source = new StreamSource(getResourceAsStream(xslt));
-    } else if (xslt.startsWith("<") && xslt.endsWith("stylesheet>")) {
-      // assume this is a string containing an XSLT
-      InputStream in =
-        new ByteArrayInputStream(xslt.getBytes(StandardCharsets.UTF_8));
-      source = new StreamSource(in);
-    } else {
-      throw new IllegalStateException("configuration error: invalid xslt");
-    }
-    return source;
-  }
+  private CustomTransformerFactory() {}
 
   /** This creates a Transformer if not already present in the pool. */
-  @Override
-  public Transformer makeObject(String key) throws Exception {
+  public static Transformer createTransformer(String key) throws Exception {
     Transformer t = null;
     String[] parts = key.split("-", 2);
     String engine = parts[0];
     String xslt = parts[1];
-    TransformerFactory tf = getTransformerFactory(engine);
+    TransformerFactory tf = TransformerFactory.newInstance(engine, null);
     SimpleErrorListener errorListener = new SimpleErrorListener();
     // This handles errors that occur when creating the transformer. Eg, XSL malformed.
     tf.setErrorListener(errorListener);
@@ -99,7 +52,8 @@ public class PooledTransformerFactory extends BaseKeyedPoolableObjectFactory<Str
       // }
     } catch (javax.xml.transform.TransformerConfigurationException tce1) {
       if (errorListener.getXsltError() != null) {
-        throw new PoolException(tce1.getMessage(), errorListener.getXsltError(), tce1);
+        throw new TransformerCreationException(
+            tce1.getMessage(), errorListener.getXsltError(), tce1);
       } else {
         throw tce1;
       }
@@ -107,30 +61,62 @@ public class PooledTransformerFactory extends BaseKeyedPoolableObjectFactory<Str
     return t;
   }
 
-  /** Destroy an instance no longer needed by the pool. */
-  @Override
-  public void destroyObject(String /*Object*/ key, Transformer /*Object*/ t) {
-    /* NOOP */
+  private static InputStream getResourceAsStream(String resourceName) throws IOException {
+    // forcibly prepend a slash
+    if (!resourceName.startsWith("/")) {
+      resourceName = "/" + resourceName;
+    }
+    if (!resourceName.startsWith("/resources")) {
+      resourceName = "/resources" + resourceName;
+    }
+    InputStream in = CustomTransformerFactory.class.getResourceAsStream(resourceName);
+
+    if (in == null) {
+      throw new IOException("resource \"" + resourceName + "\" not found");
+    }
+
+    return in;
   }
 
-  /** Reinitialize an instance to be returned by the pool to a caller */
-  @Override
-  public void activateObject(String /*Object*/ key, Transformer /*Object*/ t) throws Exception {
-    /* NOOP */
+  private static boolean isValidURL(String url) {
+    try {
+      URL u = new URL(url);
+      u.toURI();
+    } catch (MalformedURLException e) {
+      return false;
+    } catch (URISyntaxException e) {
+      return false;
+    }
+    return true;
   }
 
-  /** Uninitialize an instance to be returned to the idle object pool. */
-  @Override
-  public void passivateObject(String /*Object*/ key, Transformer /*Object*/ t) throws Exception {
-    t.reset();
-    ((SimpleErrorListener) t.getErrorListener()).reset();
+  private static Source convertXsltToSource(String xslt) throws IOException {
+    // check for the kind of xslt. URI, filename, or string
+    Source source = null;
+
+    if (isValidURL(xslt)) {
+      // It is a URL, therefore instantiate StreamSource directly from URI
+      // varName = prefix + "_xslturl";
+      // msgCtxt.setVariable(varName, xslt);
+      source = new StreamSource(xslt);
+    } else if (xslt.endsWith(".xsl") || xslt.endsWith(".xslt")) {
+      // assume this is a stream resource in the JAR
+      source = new StreamSource(getResourceAsStream(xslt));
+    } else if (xslt.startsWith("<") && xslt.endsWith("stylesheet>")) {
+      // assume this is a string containing an XSLT
+      InputStream in = new ByteArrayInputStream(xslt.getBytes(StandardCharsets.UTF_8));
+      source = new StreamSource(in);
+    } else {
+      throw new IllegalStateException("configuration error: invalid xslt");
+    }
+    return source;
   }
 
   /**
    * This class simply catches and stores the most recent error, for later retrieval. Last write
    * wins.
    */
-  final class SimpleErrorListener implements ErrorListener {
+  static final class SimpleErrorListener implements ErrorListener {
     private String xsltError;
 
     public void error(TransformerException exception) {

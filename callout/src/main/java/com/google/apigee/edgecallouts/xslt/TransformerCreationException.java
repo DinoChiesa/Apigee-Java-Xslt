@@ -16,10 +16,10 @@ package com.google.apigee.edgecallouts.xslt;
 
 import javax.xml.transform.TransformerException;
 
-public class PoolException extends Exception {
+public class TransformerCreationException extends Exception {
   private String additionalInformation;
 
-  public PoolException(String message, String additionalInformation, TransformerException inner) {
+  public TransformerCreationException(String message, String additionalInformation, TransformerException inner) {
     super(message, inner);
     this.additionalInformation = additionalInformation;
   }

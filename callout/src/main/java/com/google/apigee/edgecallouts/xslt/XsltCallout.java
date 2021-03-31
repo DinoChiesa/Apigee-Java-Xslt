@@ -91,39 +91,24 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.apache.commons.pool.KeyedObjectPool;
-import org.apache.commons.pool.impl.StackKeyedObjectPool;
 
 @IOIntensive
 public class XsltCallout extends CalloutBase implements Execution {
   // The default cap on the number of "sleeping" instances in the pool.
   private static final String varPrefix = "xslt_";
-  protected static final int MAX_IDLE_TRANSFORMERS = 20;
+  protected static final int MAX_CACHE_ENTRIES = 512;
   private static final String urlReferencePatternString = "^(https?://)(.+)$";
   private static final Pattern urlReferencePattern = Pattern.compile(urlReferencePatternString);
   private LoadingCache<String, String> fileResourceCache;
   private LoadingCache<String, String> urlResourceCache;
-  private KeyedObjectPool transformerPool;
 
   public XsltCallout(Map properties) {
     super(properties);
 
-    /**
-     * transformers is a keyed pool of Transformer objects. The key is the xslt engine joined by a
-     * dash with the XSLT sheet. Example: "saxon-transformResponse.xsl". The pool is not limited in
-     * size; it expands to meet concurrent demand. It contracts to the MAX_IDLE_TRANSFORMERS in low
-     * contention conditions. The idea is that if we have 25 concurrent requests, all of them can
-     * have their own Transformer object; but those objects get returned to a pool for re-use so we
-     * don't have to create one for each request.
-     */
-    this.transformerPool =
-        new StackKeyedObjectPool<String, Transformer>(
-            new PooledTransformerFactory(), MAX_IDLE_TRANSFORMERS);
-
     fileResourceCache =
         CacheBuilder.newBuilder()
             .concurrencyLevel(4)
-            .maximumSize(1048000)
+            .maximumSize(MAX_CACHE_ENTRIES)
             .expireAfterAccess(10, TimeUnit.MINUTES)
             .build(
                 new CacheLoader<String, String>() {
@@ -150,7 +135,7 @@ public class XsltCallout extends CalloutBase implements Execution {
     urlResourceCache =
         CacheBuilder.newBuilder()
             .concurrencyLevel(4)
-            .maximumSize(1048000)
+            .maximumSize(MAX_CACHE_ENTRIES)
             .expireAfterAccess(10, TimeUnit.MINUTES)
             .build(
                 new CacheLoader<String, String>() {
@@ -160,8 +145,10 @@ public class XsltCallout extends CalloutBase implements Execution {
                     try {
                       URL url = new URL(key);
                       in = url.openStream();
-                      s = new BufferedReader(new InputStreamReader(in))
-                            .lines().collect(Collectors.joining("\n"));
+                      s =
+                          new BufferedReader(new InputStreamReader(in))
+                              .lines()
+                              .collect(Collectors.joining("\n"));
                     } catch (java.lang.Exception exc1) {
                       // gulp
                     } finally {
@@ -203,8 +190,7 @@ public class XsltCallout extends CalloutBase implements Execution {
       if (!s.startsWith("<")) {
         throw new IllegalStateException("input does not appear to be XML");
       }
-      InputStream s2 =
-        new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+      InputStream s2 = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
 
       source = new StreamSource(s2);
     }
@@ -287,7 +273,7 @@ public class XsltCallout extends CalloutBase implements Execution {
       String xslt = getXslt(msgCtxt);
       String xsltEngine = getEngine(msgCtxt);
       cacheKey = xsltEngine + "-" + xslt;
-      transformer = (Transformer) transformerPool.borrowObject(cacheKey);
+      transformer = CustomTransformerFactory.createTransformer(cacheKey);
       CustomXsltErrorListener listener = new CustomXsltErrorListener(msgCtxt, debug);
       transformer.setErrorListener(listener);
       Source input = getTransformInput(msgCtxt);
@@ -324,15 +310,10 @@ public class XsltCallout extends CalloutBase implements Execution {
       if (debug) System.out.println(CalloutUtil.getStackTraceAsString(e));
       msgCtxt.setVariable(varName("exception"), e.toString());
       msgCtxt.setVariable(varName("error"), e.getMessage());
-      if (e instanceof PoolException) {
+      if (e instanceof TransformerCreationException) {
         msgCtxt.setVariable(
-            varName("additionalInformation"), ((PoolException) e).getAdditionalInformation());
-      }
-    } finally {
-      try {
-        if (cacheKey != null && transformer != null)
-          transformerPool.returnObject(cacheKey, transformer);
-      } catch (java.lang.Exception ignored) {
+            varName("additionalInformation"),
+            ((TransformerCreationException) e).getAdditionalInformation());
       }
     }
 

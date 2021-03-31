@@ -284,19 +284,10 @@ Building from source requires Java 1.8, and Maven.
 Pull requests are welcomed!
 
 
-## Build Dependencies
-
-- Apigee Edge expressions v1.0
-- Apigee Edge message-flow v1.0
-- Apache commons lang 2.6
-- Apache commons validator 1.4.1
-- Apache commons io 2.0.1
-- Apache commons pool 1.6
-
 
 ## License
 
-This material is Copyright (c) 2017-2019, Google LLC.  and is licensed under
+This material is Copyright (c) 2017-2020, Google LLC.  and is licensed under
 the [Apache 2.0 License](LICENSE). This includes the Java code as well
 as the API Proxy configuration.
 

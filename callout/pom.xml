@@ -4,9 +4,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.apigee.callout</groupId>
-  <artifactId>edge-custom-xslt</artifactId>
-  <version>1.0.10</version>
-  <name>EdgeCustomXslt</name>
+  <artifactId>apigee-custom-xslt</artifactId>
+  <version>1.0.11</version>
+  <name>ApigeeCustomXslt</name>
   <url>http://maven.apache.org</url>
   <packaging>jar</packaging>
   <properties>
@@ -17,18 +17,10 @@
     <testng.version>6.8.7</testng.version> <!-- current: 6.9.4 -->
     <jmockit.version>1.7</jmockit.version>
     <jackson.version>[2.9.10.1,)</jackson.version>
-    <guava.version>26.0-jre</guava.version>
-    <commons.pool.version>1.6</commons.pool.version>
-    <commons.validator.version>1.4.1</commons.validator.version>
+    <guava.version>29.0-jre</guava.version>
   </properties>
 
   <dependencies>
-
-    <dependency>
-      <groupId>commons-validator</groupId>
-      <artifactId>commons-validator</artifactId>
-      <version>${commons.validator.version}</version>
-    </dependency>
 
     <dependency>
       <groupId>net.sf.saxon</groupId>
@@ -41,13 +33,6 @@
       <groupId>xalan</groupId>
       <artifactId>xalan</artifactId>
       <version>2.7.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-pool</groupId>
-      <artifactId>commons-pool</artifactId>
-      <version>${commons.pool.version}</version>
-      <!-- <scope>provided</scope> -->
     </dependency>
 
     <dependency>
@@ -146,6 +131,7 @@ mvn install:install-file \
             </goals>
             <configuration>
               <outputDirectory>${project.build.directory}/lib</outputDirectory>
+              <includeScope>runtime</includeScope>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>false</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
@@ -188,13 +174,17 @@ mvn install:install-file \
                   <fileset dir="${project.build.directory}">
                     <include name="${project.artifactId}-${project.version}.jar"/>
                     <!-- copy required dependencies: -->
-                    <include name="lib/commons-pool-${commons.pool.version}.jar"/>
-                    <include name="lib/commons-validator-${commons.validator.version}.jar"/>
-                    <include name="lib/commons-lang-${commons.lang.version}.jar"/>
-                    <include name="lib/commons-io-${commons.io.version}.jar"/>
-                    <include name="lib/commons-codec-${commons.codec.version}.jar"/>
-                    <include name="lib/guava-${guava.version}.jar"/>
-                    <include name="lib/xalan-${xalan.version}.jar"/>
+                    <include name="lib/*.jar"/>
+                    <exclude name="lib/message-flow-1.0.0.jar"/>
+                    <exclude name="lib/expressions-1.0.0.jar"/>
+                    <exclude name='lib/j2objc-annotations-*.jar'/>
+                    <exclude name='lib/jcip-annotations-*.*.jar'/>
+                    <exclude name='lib/animal-sniffer-annotations-*.*.jar'/>
+                    <exclude name='lib/error_prone_annotations-*.*.jar'/>
+                    <exclude name='lib/checker-qual-*.*.jar'/>
+                    <exclude name='lib/jsr305-*.jar'/>
+                    <exclude name='lib/xml-apis-*.jar'/>
+                    <exclude name='lib/guava-26.0-*.jar'/>
                     <!--                    -->
                   </fileset>
                   <mapper type="flatten"/>
