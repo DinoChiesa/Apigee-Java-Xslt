@@ -6,7 +6,7 @@
 // XSLT engine (eg, saxon, xalan), and the XSLT stylesheet name or url (eg,
 // transformResponse.xsl) .
 //
-// Copyright 2015-2018 Google LLC.
+// Copyright 2015-2021 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@
 //
 //
 
-package com.google.apigee.edgecallouts.xslt;
+package com.google.apigee.callouts.xslt;
 
 import com.apigee.flow.execution.ExecutionContext;
 import com.apigee.flow.execution.ExecutionResult;
@@ -67,7 +67,7 @@ import com.apigee.flow.execution.IOIntensive;
 import com.apigee.flow.execution.spi.Execution;
 import com.apigee.flow.message.Message;
 import com.apigee.flow.message.MessageContext;
-import com.google.apigee.edgecallouts.CalloutBase;
+import com.google.apigee.callouts.CalloutBase;
 import com.google.apigee.util.CalloutUtil;
 import com.google.common.base.Predicate;
 import com.google.common.cache.CacheBuilder;

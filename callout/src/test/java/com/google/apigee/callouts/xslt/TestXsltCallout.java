@@ -1,4 +1,4 @@
-// Copyright 2017-2018 Google LLC.
+// Copyright 2017-2021 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-package com.google.apigee.testng.edgecallouts;
+package com.google.apigee.callouts.xslt;
 
 import com.apigee.flow.execution.ExecutionContext;
 import com.apigee.flow.execution.ExecutionResult;
@@ -21,7 +21,6 @@ import com.apigee.flow.message.Message;
 import com.apigee.flow.message.MessageContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.apigee.edgecallouts.xslt.XsltCallout;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -148,13 +147,7 @@ public class TestXsltCallout {
         list.add(tc);
       }
     }
-    // OMG!!  Seriously? Is this the easiest way to generate a 2-d array?
-    int n = list.size();
-    Object[][] data = new Object[n][];
-    for (int i = 0; i < data.length; i++) {
-      data[i] = new Object[] {list.get(i)};
-    }
-    return data;
+    return list.stream().map(tc -> new TestCase[] {tc}).toArray(Object[][]::new);
   }
 
   @Test
