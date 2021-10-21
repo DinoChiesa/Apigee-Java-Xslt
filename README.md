@@ -13,7 +13,6 @@ does XSLT; this callout is different in that it is a bit more flexible.
 * You can use the data: URI scheme to instantiate a document in the XSL.
 
 
-
 ## Disclaimer
 
 This example is not an official Google product, nor is it part of an official Google product.
@@ -26,7 +25,10 @@ The instructions to do so are at the bottom of this README.
 
 After you build it,
 
-1. copy the jar file, available in  target/apigee-custom-xslt-1.0.11.jar , to your apiproxy/resources/java directory. Also copy all the required dependencies. You can do this offline, or using the graphical Proxy Editor in the Apigee Admin Portal.
+1. copy the jar file, available in target/apigee-custom-xslt-20211021.jar , to
+   your apiproxy/resources/java directory. Also copy all the required
+   dependencies. You can do this offline, or using the graphical Proxy Editor in
+   the Apigee Admin Portal.
 
 2. include a Java callout policy in your
    apiproxy/resources/policies directory. It should look
@@ -37,8 +39,8 @@ After you build it,
         <Property name='xslt'>file://xslt-name-here.xsl</Property>
            ....
       </Properties>
-      <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-      <ResourceURL>java://apigee-custom-xslt-1.0.11.jar</ResourceURL>
+      <ClassName>com.google.apigee.callouts.xslt.XsltCallout</ClassName>
+      <ResourceURL>java://apigee-custom-xslt-20211021.jar</ResourceURL>
     </JavaCallout>
    ```
 
@@ -51,7 +53,7 @@ After you build it,
 
 ## Notes
 
-There is one callout class, com.google.apigee.edgecallouts.xslt.XsltCallout ,
+There is one callout class, com.google.apigee.callouts.xslt.XsltCallout ,
 which performs an XSL Transform .
 
 You must configure the callout with Property elements in the policy
@@ -75,8 +77,8 @@ better performance at high concurrency.
      <Property name='input'>response</Property>
      <Property name='output'>response.content</Property>
   </Properties>
-  <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://apigee-custom-xslt-1.0.11.jar</ResourceURL>
+  <ClassName>com.google.apigee.callouts.xslt.XsltCallout</ClassName>
+  <ResourceURL>java://apigee-custom-xslt-20211021.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -98,9 +100,9 @@ meta-inf/manifest.mf
 com/
 com/google/
 com/google/apigee/
-com/google/apigee/edgecallouts/
-com/google/apigee/edgecallouts/xslt/
-com/google/apigee/edgecallouts/xslt/XsltCallout.class
+com/google/apigee/callouts/
+com/google/apigee/callouts/xslt/
+com/google/apigee/callouts/xslt/XsltCallout.class
 resources/
 resources/filename.xsl
 ```
@@ -140,8 +142,8 @@ You can pass parameters to the XSL, like so:
      <Property name='param_y'>file://file-embedded-in-jar.xsd</Property>
      <Property name='param_z'>{variable-containing-one-of-the-above}</Property>
   </Properties>
-  <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://apigee-custom-xslt-1.0.11.jar</ResourceURL>
+  <ClassName>com.google.apigee.callouts.xslt.XsltCallout</ClassName>
+  <ResourceURL>java://apigee-custom-xslt-20211021.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -184,8 +186,8 @@ You would configure the policy like this:
      <!-- parameter to pass to the XSLT -->
      <Property name='param_myxmldoc'>{variable-containing-xml-string}</Property>
   </Properties>
-  <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://apigee-custom-xslt-1.0.11.jar</ResourceURL>
+  <ClassName>com.google.apigee.callouts.xslt.XsltCallout</ClassName>
+  <ResourceURL>java://apigee-custom-xslt-20211021.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -219,8 +221,8 @@ In that case, the policy configuration would be like this:
      <!-- parameter to pass to the XSLT -->
      <Property name='param_myxsd'>{variable-containing-xsd-string}</Property>
   </Properties>
-  <ClassName>com.google.apigee.edgecallouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://apigee-custom-xslt-1.0.11.jar</ResourceURL>
+  <ClassName>com.google.apigee.callouts.xslt.XsltCallout</ClassName>
+  <ResourceURL>java://apigee-custom-xslt-20211021.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -281,7 +283,7 @@ Building from source requires Java 1.8, and Maven.
   This will build the jar and also run all the tests.
 
 
-Pull requests are welcomed!
+Please do send pull requests!
 
 
 
