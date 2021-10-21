@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.apigee.callout</groupId>
   <artifactId>apigee-custom-xslt</artifactId>
-  <version>1.0.11</version>
+  <version>20211021</version>
   <name>ApigeeCustomXslt</name>
   <url>http://maven.apache.org</url>
   <packaging>jar</packaging>
@@ -17,7 +17,7 @@
     <testng.version>6.8.7</testng.version> <!-- current: 6.9.4 -->
     <jmockit.version>1.7</jmockit.version>
     <jackson.version>[2.9.10.1,)</jackson.version>
-    <guava.version>29.0-jre</guava.version>
+    <caffeine.version>2.9.0</caffeine.version>
   </properties>
 
   <dependencies>
@@ -36,9 +36,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>${caffeine.version}</version>
     </dependency>
 
     <!--
@@ -143,7 +143,7 @@ mvn install:install-file \
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -167,6 +167,19 @@ mvn install:install-file \
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
+            <id>ant1</id>
+            <phase>clean</phase>
+            <configuration>
+              <tasks>
+                <delete>
+                  <fileset dir="${apiproxy.java.rsrc.dir}"
+                           includes="*.jar" />
+                </delete>
+              </tasks>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ant2</id>
             <phase>package</phase>
             <configuration>
               <tasks>
@@ -177,14 +190,8 @@ mvn install:install-file \
                     <include name="lib/*.jar"/>
                     <exclude name="lib/message-flow-1.0.0.jar"/>
                     <exclude name="lib/expressions-1.0.0.jar"/>
-                    <exclude name='lib/j2objc-annotations-*.jar'/>
-                    <exclude name='lib/jcip-annotations-*.*.jar'/>
-                    <exclude name='lib/animal-sniffer-annotations-*.*.jar'/>
-                    <exclude name='lib/error_prone_annotations-*.*.jar'/>
                     <exclude name='lib/checker-qual-*.*.jar'/>
-                    <exclude name='lib/jsr305-*.jar'/>
                     <exclude name='lib/xml-apis-*.jar'/>
-                    <exclude name='lib/guava-26.0-*.jar'/>
                     <!--                    -->
                   </fileset>
                   <mapper type="flatten"/>
@@ -218,7 +225,7 @@ mvn install:install-file \
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M2</version>
+        <version>3.0.0-M3</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -239,7 +246,7 @@ mvn install:install-file \
        <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.8.1</version>
         <executions>
           <execution>
             <phase>compile</phase>

@@ -67,13 +67,11 @@ import com.apigee.flow.execution.IOIntensive;
 import com.apigee.flow.execution.spi.Execution;
 import com.apigee.flow.message.Message;
 import com.apigee.flow.message.MessageContext;
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.apigee.callouts.CalloutBase;
 import com.google.apigee.util.CalloutUtil;
-import com.google.common.base.Predicate;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Maps;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -99,15 +97,13 @@ public class XsltCallout extends CalloutBase implements Execution {
   protected static final int MAX_CACHE_ENTRIES = 512;
   private static final String urlReferencePatternString = "^(https?://)(.+)$";
   private static final Pattern urlReferencePattern = Pattern.compile(urlReferencePatternString);
-  private LoadingCache<String, String> fileResourceCache;
-  private LoadingCache<String, String> urlResourceCache;
+  private static final LoadingCache<String, String> fileResourceCache;
+  private static final LoadingCache<String, String> urlResourceCache;
 
-  public XsltCallout(Map properties) {
-    super(properties);
-
+  static {
     fileResourceCache =
-        CacheBuilder.newBuilder()
-            .concurrencyLevel(4)
+        Caffeine.newBuilder()
+            // .concurrencyLevel(4)
             .maximumSize(MAX_CACHE_ENTRIES)
             .expireAfterAccess(10, TimeUnit.MINUTES)
             .build(
@@ -133,32 +129,28 @@ public class XsltCallout extends CalloutBase implements Execution {
                 });
 
     urlResourceCache =
-        CacheBuilder.newBuilder()
-            .concurrencyLevel(4)
+        Caffeine.newBuilder()
+            // .concurrencyLevel(4)
             .maximumSize(MAX_CACHE_ENTRIES)
             .expireAfterAccess(10, TimeUnit.MINUTES)
             .build(
                 new CacheLoader<String, String>() {
                   public String load(String key) throws IOException {
-                    InputStream in = null;
                     String s = "";
-                    try {
-                      URL url = new URL(key);
-                      in = url.openStream();
-                      s =
-                          new BufferedReader(new InputStreamReader(in))
-                              .lines()
-                              .collect(Collectors.joining("\n"));
+                    try (BufferedReader reader =
+                        new BufferedReader(new InputStreamReader(new URL(key).openStream()))) {
+
+                      s = reader.lines().collect(Collectors.joining("\n"));
                     } catch (java.lang.Exception exc1) {
                       // gulp
-                    } finally {
-                      if (in != null) {
-                        in.close();
-                      }
                     }
                     return s.trim();
                   }
                 });
+  }
+
+  public XsltCallout(Map properties) {
+    super(properties);
   }
 
   public String getVarnamePrefix() {
@@ -252,15 +244,9 @@ public class XsltCallout extends CalloutBase implements Execution {
   // Return all properties that begin with param_
   // These will be passed to the XSLT as parameters.
   private Map<String, String> paramProperties() {
-    Predicate<Map.Entry<String, String>> p1 =
-        new Predicate<Map.Entry<String, String>>() {
-          @Override
-          public boolean apply(Map.Entry<String, String> entry) {
-            return entry.getKey().startsWith("param_");
-          }
-        };
-    Map<String, String> paramProps = Maps.filterEntries(properties, p1);
-    return paramProps;
+    return properties.entrySet().stream()
+        .filter(entry -> entry.getKey().startsWith("param_"))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   public ExecutionResult execute(MessageContext msgCtxt, ExecutionContext exeCtxt) {
