@@ -153,7 +153,7 @@ mvn install:install-file \
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>3.2.0</version>
         <configuration>
           <archive>
             <!-- do not include the pom.xml file in the generated jar -->
@@ -165,6 +165,7 @@ mvn install:install-file \
 
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <id>ant1</id>
@@ -173,19 +174,19 @@ mvn install:install-file \
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <delete>
                   <fileset dir="${apiproxy.java.rsrc.dir}"
                            includes="*.jar" />
                 </delete>
-              </tasks>
+              </target>
             </configuration>
           </execution>
           <execution>
             <id>ant2</id>
             <phase>package</phase>
             <configuration>
-              <tasks>
+              <target>
                 <copy todir="${apiproxy.java.rsrc.dir}">
                   <fileset dir="${project.build.directory}">
                     <include name="${project.artifactId}-${project.version}.jar"/>
@@ -199,7 +200,7 @@ mvn install:install-file \
                   </fileset>
                   <mapper type="flatten"/>
                 </copy>
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
