@@ -169,6 +169,9 @@ mvn install:install-file \
           <execution>
             <id>ant1</id>
             <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
             <configuration>
               <tasks>
                 <delete>

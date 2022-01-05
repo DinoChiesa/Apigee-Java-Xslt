@@ -2,7 +2,7 @@
 # -*- mode:shell-script; coding:utf-8; -*-
 #
 # Created: <Tue Oct  6 11:46:13 2015>
-# Last Updated: <2015-October-06 11:53:42>
+# Last Updated: <2022-January-04 16:47:08>
 #
 
 echo
@@ -19,7 +19,7 @@ curl -O https://raw.githubusercontent.com/apigee/api-platform-samples/master/doc
   -Dpackaging=jar \
   -DgeneratePom=true
 
-rm expressions-1.0.0.jar 
+rm expressions-1.0.0.jar
 
 curl -O https://raw.githubusercontent.com/apigee/api-platform-samples/master/doc-samples/java-cookbook/lib/message-flow-1.0.0.jar
 
@@ -31,7 +31,7 @@ curl -O https://raw.githubusercontent.com/apigee/api-platform-samples/master/doc
   -Dpackaging=jar \
   -DgeneratePom=true
 
-rm message-flow-1.0.0.jar 
+rm message-flow-1.0.0.jar
 
 echo
 echo done.
