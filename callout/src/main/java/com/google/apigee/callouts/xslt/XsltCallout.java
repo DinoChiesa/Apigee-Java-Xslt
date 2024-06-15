@@ -1,12 +1,4 @@
-// XsltCallout.java
-//
-// A callout for Apigee Edge that performs an XSLT. This callout uses a "keyed
-// pool" of javax.xml.transform.Transformer objects to optimize the creation of
-// such objects during concurrent requests. The key is the concatenation of the
-// XSLT engine (eg, saxon, xalan), and the XSLT stylesheet name or url (eg,
-// transformResponse.xsl) .
-//
-// Copyright 2015-2021 Google LLC.
+// Copyright © 2015 Apigee Corp, 2016-2021 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,8 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+// ==========================================================
+// XsltCallout.java
 //
-// Friday, 28 August 2015, 16:26
+// A callout for Apigee that performs an XSLT. This callout uses a "keyed
+// pool" of javax.xml.transform.Transformer objects to optimize the creation of
+// such objects during concurrent requests. The key is the concatenation of the
+// XSLT engine (eg, saxon, xalan), and the XSLT stylesheet name or url (eg,
+// transformResponse.xsl) .
+//
 //
 // Example configuration
 //
@@ -54,16 +53,11 @@
 //
 // ----------------------------------------------------------
 //
-// This software is licensed under the Apache Source license 2.0.
-// See the accompanying LICENSE file.
-//
-//
 
 package com.google.apigee.callouts.xslt;
 
 import com.apigee.flow.execution.ExecutionContext;
 import com.apigee.flow.execution.ExecutionResult;
-import com.apigee.flow.execution.IOIntensive;
 import com.apigee.flow.execution.spi.Execution;
 import com.apigee.flow.message.Message;
 import com.apigee.flow.message.MessageContext;
@@ -90,7 +84,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-@IOIntensive
 public class XsltCallout extends CalloutBase implements Execution {
   // The default cap on the number of "sleeping" instances in the pool.
   private static final String varPrefix = "xslt_";

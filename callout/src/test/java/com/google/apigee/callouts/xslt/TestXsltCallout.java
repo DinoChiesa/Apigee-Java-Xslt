@@ -1,4 +1,4 @@
-// Copyright 2017-2021 Google LLC.
+// Copyright © 2017-2024 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,30 +15,28 @@
 
 package com.google.apigee.callouts.xslt;
 
-import com.apigee.flow.execution.ExecutionContext;
 import com.apigee.flow.execution.ExecutionResult;
-import com.apigee.flow.message.Message;
-import com.apigee.flow.message.MessageContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.apigee.fakes.FakeExecutionContext;
+import com.google.apigee.fakes.FakeMessage;
+import com.google.apigee.fakes.FakeMessageContext;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import mockit.Mock;
-import mockit.MockUp;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -49,67 +47,20 @@ import org.xmlunit.diff.Diff;
 public class TestXsltCallout {
   private static final String testDataDir = "src/test/resources/test-data";
 
-  MessageContext msgCtxt;
-  // String messageContent;
-  InputStream messageContentStream;
-  Message message;
-  ExecutionContext exeCtxt;
+  protected FakeMessage message;
+  protected FakeMessageContext msgCtxt;
+  protected FakeExecutionContext exeCtxt;
 
-  @BeforeMethod()
-  public void beforeMethod() {
+  @BeforeMethod
+  public void beforeMethod(Method method) throws Exception {
+    String methodName = method.getName();
+    String className = method.getDeclaringClass().getName();
+    System.out.printf("\n\n==================================================================\n");
+    System.out.printf("TEST %s.%s()\n", className, methodName);
 
-    msgCtxt =
-        new MockUp<MessageContext>() {
-          private Map variables;
-
-          public void $init() {
-            variables = new HashMap();
-          }
-
-          @Mock()
-          public <T> T getVariable(final String name) {
-            if (variables == null) {
-              variables = new HashMap();
-            }
-            return (T) variables.get(name);
-          }
-
-          @Mock()
-          public boolean setVariable(final String name, final Object value) {
-            if (variables == null) {
-              variables = new HashMap();
-            }
-            variables.put(name, value);
-            return true;
-          }
-
-          @Mock()
-          public boolean removeVariable(final String name) {
-            if (variables == null) {
-              variables = new HashMap();
-            }
-            if (variables.containsKey(name)) {
-              variables.remove(name);
-            }
-            return true;
-          }
-
-          @Mock()
-          public Message getMessage() {
-            return message;
-          }
-        }.getMockInstance();
-
-    exeCtxt = new MockUp<ExecutionContext>() {}.getMockInstance();
-
-    message =
-        new MockUp<Message>() {
-          @Mock()
-          public InputStream getContentAsStream() {
-            // new ByteArrayInputStream(messageContent.getBytes(StandardCharsets.UTF_8));
-            return messageContentStream;
-          }
-        }.getMockInstance();
+    message = new FakeMessage();
+    msgCtxt = new FakeMessageContext(message);
+    exeCtxt = new FakeExecutionContext();
   }
 
   @DataProvider(name = "batch1")
@@ -188,7 +139,7 @@ public class TestXsltCallout {
       msgCtxt.setVariable(key, value);
     }
 
-    messageContentStream = getInputStream(tc);
+    message.setContent(getInputStream(tc));
 
     XsltCallout callout = new XsltCallout(tc.getProperties());
 
@@ -210,8 +161,7 @@ public class TestXsltCallout {
         }
         InputStream in = Files.newInputStream(path);
         String expectedOutput =
-                      new BufferedReader(new InputStreamReader(in))
-                            .lines().collect(Collectors.joining("\n"));
+            new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
 
         String actualOutput = (String) (msgCtxt.getVariable("message.content"));
 
