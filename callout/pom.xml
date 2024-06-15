@@ -18,7 +18,7 @@
     <jmockit.version>1.49</jmockit.version>
     <jackson.version>[2.9.10.1,)</jackson.version>
     <caffeine.version>2.9.0</caffeine.version>
-    <xalan.version>2.7.2</xalan.version>
+    <xalan.version>2.7.3</xalan.version>
   </properties>
 
   <repositories>
