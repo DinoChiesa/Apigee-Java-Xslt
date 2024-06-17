@@ -265,41 +265,64 @@ The custom URIResolver implemented here handles only mime types of text/xml .
 
 
 
-## Building
+## Building the Jar
 
-Building from source requires Java 1.8, and Maven.
+If you are using Apigee X or hybrid, you do not need to build the Jar in order
+to use the custom policy. The custom policy is ready to use, with policy
+configuration. If you are using OPDK, which still relies on Java8, you will
+need to re-build the JAR. The jar bundled here has been built with Java11.  If
+you try to use it with OPDK, you will receive an error message like the
+following:
 
-1. unpack (if you can read this, you've already done that).
-
-2. Before building _the first time_, configure the build on your machine by loading the Apigee jars into your local cache:
-  ```
-  ./buildsetup.sh
-  ```
-
-3. Build with maven.
-  ```
-  mvn clean package
-  ```
-  This will build the jar and also run all the tests.
+> Failed to load java class com.google.apigee.callouts.GenerateJwe definition
+> due to - com/google/apigee/callouts/GenerateJwe has been compiled by a more
+> recent version of the Java Runtime (class file version 55.0), this version of
+> the Java Runtime only recognizes class file versions up to 52.0.
 
 
-Please do send pull requests!
+If using Apigee X or hybrid, you need to re-build the jar only if you want
+to modify the behavior of the custom policy. Before you do that, be sure you understand
+all the configuration options - the policy may be usable for you without modification.
+
+If you do wish to build the jar, you can use
+[maven](https://maven.apache.org/download.cgi) to do so, v3.9.0 or later.
+
+### To Build
+
+```
+cd callout
+
+# build with Java11
+mvn clean package
+
+# build with Java8
+mvn -f pom-java8.xml clean package
+
+```
+
+The source code includes tests.
+
+If you edit policies offline, copy [the jar file for the custom
+policy](callout/target/apigee-callout-encrypted-jwt-20240614.jar) and all the
+dependencies to your apiproxy/resources/java directory.  If you don't edit proxy
+bundles offline, upload that jar file into the API Proxy via the Apigee API
+Proxy Editor.
 
 
 
 ## License
 
-This material is Copyright (c) 2017-2021, Google LLC.  and is licensed under
+This material is [Copyright (c) 2017-2024, Google LLC](./NOTICE).  and is licensed under
 the [Apache 2.0 License](LICENSE). This includes the Java code as well
 as the API Proxy configuration.
 
 
 ## Support
 
-This callout is open-source software, and is not a supported part of Apigee Edge.
-If you need assistance, you can try inquiring on
-[The Apigee Community Site](https://community.apigee.com).  There is no service-level
-guarantee for responses to inquiries regarding this callout.
+This callout is open-source software, and is not a supported part of Apigee.  If
+you need assistance, you can try inquiring on [the Google Cloud Community forum
+dedicated to Apigee](https://goo.gle/apigee-community) There is no service-level
+guarantee for responses to inquiries posted to that site.
 
 
 ## Bugs
