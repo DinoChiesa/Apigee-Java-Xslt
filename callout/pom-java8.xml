@@ -16,13 +16,13 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.release>1.8</maven.compiler.release>
-
     <apiproxy.java.rsrc.dir>../bundle/apiproxy/resources/java</apiproxy.java.rsrc.dir>
     <testng.version>6.8.7</testng.version> <!-- current: 6.9.4 -->
     <jmockit.version>1.49</jmockit.version>
     <jackson.version>[2.9.10.1,)</jackson.version>
     <caffeine.version>2.9.0</caffeine.version>
     <xalan.version>2.7.3</xalan.version>
+    <xmlunit.version>2.10.0</xmlunit.version>
   </properties>
 
   <repositories>
@@ -100,7 +100,7 @@
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-core</artifactId>
-      <version>2.2.1</version>
+      <version>${xmlunit.version}</version>
       <scope>test</scope>
     </dependency>
 
