@@ -303,7 +303,7 @@ mvn -f pom-java8.xml clean package
 The source code includes tests.
 
 If you edit policies offline, copy [the jar file for the custom
-policy](callout/target/apigee-callout-encrypted-jwt-20240614.jar) and all the
+policy](callout/target/apigee-custom-xslt-20240617.jar) and all the
 dependencies to your apiproxy/resources/java directory.  If you don't edit proxy
 bundles offline, upload that jar file into the API Proxy via the Apigee API
 Proxy Editor.
