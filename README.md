@@ -25,7 +25,7 @@ The instructions to do so are at the bottom of this README.
 
 After you build it,
 
-1. copy the jar file, available in target/apigee-custom-xslt-20220708.jar , to
+1. copy the jar file, available in target/apigee-custom-xslt-20240617.jar , to
    your apiproxy/resources/java directory. Also copy all the required
    dependencies. You can do this offline, or using the graphical Proxy Editor in
    the Apigee Admin Portal.
@@ -40,7 +40,7 @@ After you build it,
            ....
       </Properties>
       <ClassName>com.google.apigee.callouts.xslt.XsltCallout</ClassName>
-      <ResourceURL>java://apigee-custom-xslt-20220708.jar</ResourceURL>
+      <ResourceURL>java://apigee-custom-xslt-20240617.jar</ResourceURL>
     </JavaCallout>
    ```
 
@@ -78,7 +78,7 @@ better performance at high concurrency.
      <Property name='output'>response.content</Property>
   </Properties>
   <ClassName>com.google.apigee.callouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://apigee-custom-xslt-20220708.jar</ResourceURL>
+  <ResourceURL>java://apigee-custom-xslt-20240617.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -143,7 +143,7 @@ You can pass parameters to the XSL, like so:
      <Property name='param_z'>{variable-containing-one-of-the-above}</Property>
   </Properties>
   <ClassName>com.google.apigee.callouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://apigee-custom-xslt-20220708.jar</ResourceURL>
+  <ResourceURL>java://apigee-custom-xslt-20240617.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -187,7 +187,7 @@ You would configure the policy like this:
      <Property name='param_myxmldoc'>{variable-containing-xml-string}</Property>
   </Properties>
   <ClassName>com.google.apigee.callouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://apigee-custom-xslt-20220708.jar</ResourceURL>
+  <ResourceURL>java://apigee-custom-xslt-20240617.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -222,7 +222,7 @@ In that case, the policy configuration would be like this:
      <Property name='param_myxsd'>{variable-containing-xsd-string}</Property>
   </Properties>
   <ClassName>com.google.apigee.callouts.xslt.XsltCallout</ClassName>
-  <ResourceURL>java://apigee-custom-xslt-20220708.jar</ResourceURL>
+  <ResourceURL>java://apigee-custom-xslt-20240617.jar</ResourceURL>
 </JavaCallout>
 ```
 

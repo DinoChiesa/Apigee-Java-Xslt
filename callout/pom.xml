@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.apigee.callout</groupId>
   <artifactId>apigee-custom-xslt</artifactId>
-  <version>20240614</version>
+  <version>20240617</version>
   <name>ApigeeCustomXslt</name>
   <url>http://maven.apache.org</url>
   <packaging>jar</packaging>
@@ -18,7 +18,7 @@
     <jmockit.version>1.49</jmockit.version>
     <jackson.version>[2.9.10.1,)</jackson.version>
     <caffeine.version>2.9.0</caffeine.version>
-    <xalan.version>2.7.2</xalan.version>
+    <xalan.version>2.7.3</xalan.version>
   </properties>
 
   <repositories>
